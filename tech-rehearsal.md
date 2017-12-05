@@ -1,8 +1,11 @@
 ### TIME AND LOCATION
 
 Date: December 5th (12/05)
+
 Time: 10:25am
+
 Location: **Room 006**
+
 Equipment: 
 - two projectors
 - one PA system (laptop output + microphone)
