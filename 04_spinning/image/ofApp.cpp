@@ -18,6 +18,7 @@ ofPoint randomPointInCircle(float max) {
 	return pnt;
 }
 
+//--------------------------------------------------------------
 void Particle::state1() {
 	gui.setup();
 	gui.add(color.setup("Color", ofColor(10, 125, 255), ofColor(0, 0), ofColor(255, 255)));
@@ -29,6 +30,7 @@ void Particle::state1() {
 	live = true;
 }
 
+//--------------------------------------------------------------
 void Particle::state2() {
 	gui.setup();
 	gui.add(color.setup("Color", ofColor(196, 114, 34), ofColor(0, 0), ofColor(255, 255)));
