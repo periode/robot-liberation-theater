@@ -5,7 +5,7 @@ void ofApp::setup(){
     ofSetWindowShape(600,600);
     angle = 0;
     speed = 100;
-    vertices = 100;
+    vertices = 2;
     radius = 300;
     maxradius = 1000;
     minradius = 50;
@@ -91,6 +91,10 @@ void ofApp::keyPressed(int key){
     
     if(key == 'w'){
         vertices=ofRandom(1,100);
+    }
+    
+    if(key == 'p'){
+        vertices=0;
     }
     
     
