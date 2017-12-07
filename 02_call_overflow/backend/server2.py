@@ -21,8 +21,9 @@ port = 2046
 #sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 client = udp_client.UDPClient(ip3, port)
 
-def prnt(msg):
-    print msg
+def prnt(*msg):
+    #print msg
+    pass
 
 def sendSimple(msg):
     client.send_message("/test", msg.encode())
@@ -32,9 +33,14 @@ def sendMult(add, *msg):
     global client
     message = osc_message_builder.OscMessageBuilder(address=add)
 
+    count = 0
     for elem in msg:
-        prnt('Element:', elem)
-        message.add_arg(elem)
+        #prnt('Element:', elem)
+        typ='i'
+        if count == 1:
+            typ = 's'
+        message.add_arg(elem, arg_type=typ)
+        count += 1
 
     message = message.build()
     client.send(message)
