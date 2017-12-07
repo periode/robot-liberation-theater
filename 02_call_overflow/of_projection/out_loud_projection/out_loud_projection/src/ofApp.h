@@ -33,4 +33,6 @@ class ofApp : public ofBaseApp{
 
 		vector<vector<Bubble>> messages;
 
+		int ovrState = 0;
+		vector<vector<vector<string>>> ovrMss;
 };
