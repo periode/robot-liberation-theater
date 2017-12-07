@@ -10,7 +10,7 @@ The Robot Liberation Theater is a series of performances entirely generated thro
 * overworked robot - andrija, brooke and kate
 * call overflow - jennifer and mateo
 * lost robot - ali and lateefa
-* agnes - arantza and reine
+* Revolver - arantza and reine
 * navigator and wanderer robots - luize and nahil
 * tourist robot - mei and siba
 * love robot - grace and isabella
