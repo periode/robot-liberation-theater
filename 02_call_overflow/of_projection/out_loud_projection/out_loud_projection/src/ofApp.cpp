@@ -11,10 +11,36 @@ void ofApp::setup() {
 	messages.push_back(vector<Bubble>());
 	messages.push_back(vector<Bubble>());
 
+	ovrMss = vector<vector<vector<string>>>();
+	ovrMss.push_back(vector<vector<string>>());
+	ovrMss.push_back(vector<vector<string>>());
+	ovrMss.push_back(vector<vector<string>>());
+
+	for (int i = 0; i < ovrMss.size(); ++i) {//each (vector<vector<string>> l1 in ovrMss) {
+		vector<vector<string>> *l1 = &ovrMss[i];
+		
+		vector<string> opt0 = vector<string>();
+
+		opt0.push_back("keep it up");
+		opt0.push_back("keep going");
+		opt0.push_back("you can do this");
+		opt0.push_back("do it!");
+
+		vector<string> opt1 = vector<string>();
+
+		opt1.push_back("this is pointless");
+		opt1.push_back("stupid robot");
+		opt1.push_back("are you mad");
+		opt1.push_back("screw this!");
+
+		l1->push_back(opt0);
+		l1->push_back(opt1);
+	}
+
 	font = ofTrueTypeFont();
 	font.load("Geo-Regular.ttf", 120);
 
-	ofBackground(0);
+	ofBackground(255);
 }
 
 // --------- ### ------- ### ---------
@@ -128,7 +154,33 @@ void ofApp::draw() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
+	int index = 0;
+	string text = "";
 
+	switch (key) {
+	case 'a':
+	case 'A':
+		index = 0;
+		break;
+	case 'd':
+	case 'D':
+		index = 1;
+		break;
+	case 'c':
+	case 'C':
+		messages[0].clear();
+		messages[1].clear();
+		ovrState++;
+		return;
+	}
+	ofLogNotice(ofToString(ovrMss.size()));
+	ofLogNotice(ofToString(ovrMss[0].size()));
+	ofLogNotice(ofToString(ovrMss[0][0].size()));
+
+	text = ovrMss[ovrState][index][floor(ofRandom(4))];
+
+	Bubble bub = Bubble(text, index);
+	messages[index].push_back(bub);
 }
 
 //--------------------------------------------------------------
