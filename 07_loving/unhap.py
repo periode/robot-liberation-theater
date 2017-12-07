@@ -10,7 +10,7 @@ theBreakup = ["concerned with what other people said. I didn\'t think that would
 "always the emotional one in our relationship. The one more prone to crying, the one who took things more seriously, the one who relied more on feelings than logic. And he hated the fact that I never cried. He once told me that I couldn\'t feel, that I had no heart or soul. And that broke me. Because I tried so hard for him. I tried to be what he wanted me to be for him. And that wasn\'t enough. I saw him talk to a girl at a house party we went to, and I watched the both of them, and I realized that she could be everything I can\'t be for him. Someone who will show him emotion, someone who will be what he\'s always wanted. Someone who wouldn\'t fail like me. And so, I knew I had to say goodbye. And that\'s what I did."]
 
 while True:
-    #introduction
+    #the introduction
     print "Hello? Testing. 1. 2. 3. Is this thing even on? Oh okay, cool."
     print "So. Here we are. If you\'re hoping for a love story, this won\'t be it."
     print "Okay, fine, technically it is a love story, but it\'s not going to be a happy one."
@@ -20,7 +20,7 @@ while True:
     #split 1, the meeting
     print "We met %s." % (random.choice(theMeeting))
 
-    #converge 1, first date
+    #converge 1, the first date
     print "I\'m going to say the cheesiest things ever about him, but this is my story, so I can say whatever I want."
     print "Eyes are the first things I notice about someone. And his eyes…"
     print "you know when you\'re standing outside and the sunlight hits someone\'s eyes and you realize what a beautiful color this person\'s eyes are?"
@@ -37,7 +37,7 @@ while True:
     #split 2, the breakup
     print "You\'re wondering why this isn\'t a happy love story, aren\'t you? When does it go to shit, you wonder. Well, he was %s." % (random.choice(theBreakup))
 
-    #converge 2, ending
+    #converge 2, the ending
     print "So, we\'ve reached the end. Who knew someone like him would fall in love with a robot like me? Oh, I - I\'m sorry. Yes, you heard me correctly."
     print "I\'m not a human after all. You\'ve been listening to my story all along. I\'m sorry if you thought otherwise."
     print "Also, what you\'ve just heard is one version of my love story. Here are all the stories I tell myself —"
