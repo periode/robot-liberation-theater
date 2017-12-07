@@ -1,0 +1,8 @@
+.DS_Store
+
+**/bin/
+[Oo]bj/
+*.o
+**/*.app
+[Dd]ebug*/
+[Rr]elease*/

@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "100D2C775A372AAD9CB3F2673A9C785B5AF9C183",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "F4CCB893AFADB97238A965FD2F28717F1CAAE613" : 9223372036854775807,
+    "100D2C775A372AAD9CB3F2673A9C785B5AF9C183" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "F929F4EB-42D6-444C-827A-3DC8679B75F7",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "F4CCB893AFADB97238A965FD2F28717F1CAAE613" : "robot-liberation-theater\/openframeworks\/addons\/ofxSyphon\/",
+    "100D2C775A372AAD9CB3F2673A9C785B5AF9C183" : "robot-liberation-theater\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "02_cyte_bit",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "openframeworks\/apps\/myApps\/02_cyte_bit\/02_cyte_bit.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/pierredepaz\/robot-liberation-theater.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "100D2C775A372AAD9CB3F2673A9C785B5AF9C183"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/astellato\/ofxSyphon.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "F4CCB893AFADB97238A965FD2F28717F1CAAE613"
+    }
+  ]
+}
