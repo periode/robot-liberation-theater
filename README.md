@@ -7,8 +7,8 @@ The Robot Liberation Theater is a series of performances entirely generated thro
 ### PERFORMERS
 
 * spinning tree - arb, claire and reine
-* overworked robot - andrija, brooke and kate
-* call overflow - jennifer and mateo
+* Assembly - andrija, brooke and kate
+* Call Overflow - jennifer and mateo
 * By(t)e World - Ali and Lateefa
 * Revolver - arantza and reine
 * navigator and wanderer robots - luize and nahil
