@@ -11,7 +11,7 @@ For the purposes of this document, I've included all the steps necessary. Howeve
 #### Using Syphon in OF
 1. You need to **include the ofxSyphon addon** into your project. Make sure you have downloaded it from [this repo](https://github.com/astellato/ofxSyphon), and that you have put the downloaded folder in your addons folder.
 
-**image**
+![ofxSyphon addon](https://github.com/pierredepaz/robot-liberation-theater/blob/master/stage-management/assets/syphon-addon.png)
 
 2. In order to send frames, you need two objects. One is the actual Syphon server that will send our frames `ofxSyphonServer`. The other one is the object inside which we will draw everything, and which will then be sent, `ofFbo` (FBO stands for *Frame Buffer Object*).
 
@@ -58,12 +58,12 @@ myFbo.draw(0, 0);
 
 6. In order to see what we're sending, we can use [Syphon Simple Client](https://github.com/Syphon/Simple/releases/tag/version-3). It's an application that allows us to look at the frames currently being shared. Open it and, with your OF app running, select the appropriate stream from the top left.
 
-**image of simple client alone**
+![ofxSyphon addon](https://github.com/pierredepaz/robot-liberation-theater/blob/master/stage-management/assets/syphon-simpleclient.png)
 
-**image of OF and simple client**
+![ofxSyphon addon](https://github.com/pierredepaz/robot-liberation-theater/blob/master/stage-management/assets/syphon-of-to-simpleclient.png)
 
 7. Now that we've see we send frames, we can *close Simple Client* and use it as an input source in Isadora!
 
-**isa1**
-**isa2**
-**isa3**
+![ofxSyphon addon](https://github.com/pierredepaz/robot-liberation-theater/blob/master/stage-management/assets/syphon-of-to-isadora-1.png)
+![ofxSyphon addon](https://github.com/pierredepaz/robot-liberation-theater/blob/master/stage-management/assets/syphon-of-to-isadora-2.png)
+![ofxSyphon addon](https://github.com/pierredepaz/robot-liberation-theater/blob/master/stage-management/assets/syphon-of-to-isadora-3.png)
