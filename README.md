@@ -12,5 +12,5 @@ The Robot Liberation Theater is a series of performances entirely generated thro
 * By(t)e World - Ali and Lateefa
 * Revolver - arantza and reine
 * navigator and wanderer robots - luize and nahil
-* tourist robot - mei and siba
+* Brooke in Brooklyn - mei and siba
 * love robot - grace and isabella
