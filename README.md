@@ -6,7 +6,7 @@ The Robot Liberation Theater is a series of performances entirely generated thro
 
 ### PERFORMERS
 
-* spinning tree - arb, claire and reine
+* A$AP Tree - arb, claire and reine
 * Assembly - andrija, brooke and kate
 * Call Overflow - jennifer and mateo
 * By(t)e World - Ali and Lateefa
