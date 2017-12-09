@@ -6,3 +6,5 @@ openframeworks/libs/openFrameworksCompiled/lib/osx/openFrameworksDebug.a
 **/*.app
 [Dd]ebug*/
 [Rr]elease*/
+.vs
+*.sln

@@ -33,7 +33,12 @@ class ofApp : public ofBaseApp{
 		
 		ofxOscReceiver receiver;
 		ofTrueTypeFont font;
+		bool started = false;
+
+		string siteUrl = "http://nyuad.im/call-overflow";
 
 		vector<vector<Bubble>> messages;
 
+		int ovrState = 0;
+		vector<vector<vector<string>>> ovrMss;
 };

@@ -8,42 +8,73 @@ import time
 #import pyttsx
 import sys
 import socket
+from threading import Thread
 
-from pythonosc import osc_message_builder, udp_client, osc_bundle_builder
+from pythonosc import osc_message_builder, udp_client, osc_bundle_builder, osc_server, dispatcher
 
 app = Flask(__name__)
 
 ip = "127.0.0.1"
 ip2 = "10.226.10.21"
 ip3 = 'localhost'
-port = 2046
+s_port = 2046
+r_port = 2056
 
-#sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-client = udp_client.UDPClient(ip3, port)
+# OSC Client configuration: sends messages to OF
+client = udp_client.UDPClient(ip3, s_port)
+
+# OSC Server configuration: receives OF's IP Address
+oscServer = None
+
+def clientSetup(unused, ip):
+    global oscServer
+    ipMaybe = oscServer.socket.getpeername()[0]
+
+    if oscServer is not None:
+        oscServer.shutdown()
+    print str(ipMaybe)
+
+#disp = dispatcher.Dispatcher()
+#disp.map("/setup", clientSetup)
+
+#oscServer = osc_server.ThreadingOSCUDPServer((ip3, r_port), disp)
+#oscServerThread = Thread(target=oscServer.serve_forever)
+#oscServerThread.start()
 
 def prnt(*msg):
-    #print msg
-    pass
+    for thing in msg:
+        print thing
 
 def sendSimple(msg):
     client.send_message("/test", msg.encode())
     prnt("send")
 
+def thingToTag(thing):
+    typ = type(thing)
+    if typ == int:
+        return 'i'
+    elif typ == str:
+        return 's'
+    elif typ == float:
+        return 'f'
+    elif typ == unicode:
+        thing.encode('utf8')
+        return 's'
+
 def sendMult(add, *msg):
     global client
     message = osc_message_builder.OscMessageBuilder(address=add)
 
-    count = 0
     for elem in msg:
-        #prnt('Element:', elem)
-        typ='i'
-        if count == 1:
-            typ = 's'
-        message.add_arg(elem, arg_type=typ)
-        count += 1
+        prnt('Element:', elem)
+        tag = thingToTag(elem)
+        print tag
+        message.add_arg(elem, arg_type = tag)
 
     message = message.build()
     client.send(message)
+
+
 
 state = 'a'
 
@@ -116,6 +147,22 @@ content = {
 timestamp = 0
 period = 90;
 
+buffer = []
+
+def bufferPoll(index, txt):
+    global buffer
+    entry = {
+        'index': index,
+        'message': txt
+        }
+    buffer.append(entry)
+
+def flushBuffer():
+    global buffer
+    data  = list(buffer)
+    buffer = []
+    return data
+
 @app.route('/')
 def root():
     return render_template("index.html")
@@ -149,6 +196,7 @@ def poll():
                 index = 1
 
             sendMult('/text', index, word)
+            bufferPoll(index, word)
 
             if time.clock() >= timestamp + period:
                 reset()
@@ -223,6 +271,11 @@ def override():
     saUrl = url_for('static', filename = 'superagent.js')
 
     return render_template("override.html", js=jsUrl, css = cssUrl, sa = saUrl, oCss = oCssUrl)
+
+@app.route('/api/data')
+def data():
+    stuffToSend = flushBuffer()
+    return jsonify(stuffToSend)
 
 @app.route('/api/reset')
 def resetRoute():

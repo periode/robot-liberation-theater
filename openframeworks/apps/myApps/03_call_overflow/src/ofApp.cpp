@@ -3,10 +3,10 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-    
-    fbo.allocate(1024, 768, GL_RGBA);
-    syphon_server.setName("call overflow - syphon");
-    
+
+	fbo.allocate(1024, 768, GL_RGBA);
+	syphon_server.setName("call overflow - syphon");
+
 	// set up the OSC receiver to listen for port
 	receiver.setup(PORT);
 
@@ -15,6 +15,33 @@ void ofApp::setup() {
 	messages = vector<vector<Bubble>>();
 	messages.push_back(vector<Bubble>());
 	messages.push_back(vector<Bubble>());
+
+	// Override message lists
+	ovrMss = vector<vector<vector<string>>>();
+	ovrMss.push_back(vector<vector<string>>());
+	ovrMss.push_back(vector<vector<string>>());
+	ovrMss.push_back(vector<vector<string>>());
+
+	for (int i = 0; i < ovrMss.size(); ++i) {//each (vector<vector<string>> l1 in ovrMss) {
+		vector<vector<string>> *l1 = &ovrMss[i];
+
+		vector<string> opt0 = vector<string>();
+
+		opt0.push_back("keep it up");
+		opt0.push_back("keep going");
+		opt0.push_back("you can do this");
+		opt0.push_back("do it!");
+
+		vector<string> opt1 = vector<string>();
+
+		opt1.push_back("this is pointless");
+		opt1.push_back("stupid robot");
+		opt1.push_back("are you mad");
+		opt1.push_back("screw this!");
+
+		l1->push_back(opt0);
+		l1->push_back(opt1);
+	}
 
 	font = ofTrueTypeFont();
 	font.load("Geo-Regular.ttf", 120);
@@ -119,27 +146,71 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-    fbo.begin();
+	fbo.begin();
 	float w = ofGetWidth();
 	float h = ofGetHeight();
 
-    for (Bubble b : messages[0]) {
-		b.draw(&font);
+	ofBackground(255);
+
+	if (started) {
+		for (Bubble b : messages[0]) {
+			b.draw(&font);
+		}
+		for (Bubble b : messages[1]) {
+			b.draw(&font);
+		}
+	}
+	else {
+		float fw = font.stringWidth(siteUrl)*0.5;
+		float fh = font.stringHeight(siteUrl)*0.5;
+
+		ofPushMatrix();
+		ofTranslate(w - fw, h - fh);
+
+		font.drawString(siteUrl, 0, 0);
+
+		ofPopMatrix();
 	}
 
-    for (Bubble b : messages[1]) {
-		b.draw(&font);
-	}
-    
-    fbo.end();
-    syphon_server.publishTexture(&fbo.getTexture());
-    
-    fbo.draw(0, 0);
+	fbo.end();
+	syphon_server.publishTexture(&fbo.getTexture());
+
+	fbo.draw(0, 0);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
+	int index = 0;
+	string text = "";
 
+	switch (key) {
+	case 'a':
+	case 'A':
+		index = 0;
+		break;
+	case 'd':
+	case 'D':
+		index = 1;
+		break;
+	case 'c':
+	case 'C':
+		messages[0].clear();
+		messages[1].clear();
+		ovrState++;
+		return;
+	case ' ':
+		ovrState = 0;
+		started = true;
+		return;
+	}
+	ofLogNotice(ofToString(ovrMss.size()));
+	ofLogNotice(ofToString(ovrMss[0].size()));
+	ofLogNotice(ofToString(ovrMss[0][0].size()));
+
+	text = ovrMss[ovrState][index][floor(ofRandom(4))];
+
+	Bubble bub = Bubble(text, index);
+	messages[index].push_back(bub);
 }
 
 //--------------------------------------------------------------
