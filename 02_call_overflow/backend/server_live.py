@@ -4,50 +4,19 @@
 
 from flask import Flask, render_template, request, url_for, jsonify, redirect
 import random
+import copy
+from flask_cors import CORS, cross_origin
 import time
 #import pyttsx
 import sys
-import socket
-from threading import Thread
 
-from pythonosc import osc_message_builder, udp_client, osc_bundle_builder, osc_server, dispatcher
 
 app = Flask(__name__)
-
-ip = "127.0.0.1"
-ip2 = "10.226.10.21"
-ip3 = 'localhost'
-s_port = 2046
-r_port = 2056
-
-# OSC Client configuration: sends messages to OF
-client = udp_client.UDPClient(ip3, s_port)
-
-# OSC Server configuration: receives OF's IP Address
-oscServer = None
-
-def clientSetup(unused, ip):
-    global oscServer
-    ipMaybe = oscServer.socket.getpeername()[0]
-
-    if oscServer is not None:
-        oscServer.shutdown()
-    print str(ipMaybe)
-
-#disp = dispatcher.Dispatcher()
-#disp.map("/setup", clientSetup)
-
-#oscServer = osc_server.ThreadingOSCUDPServer((ip3, r_port), disp)
-#oscServerThread = Thread(target=oscServer.serve_forever)
-#oscServerThread.start()
+cors = CORS(app, resources={r"/*": {"origins":"*"}}, send_wildcard=True)
 
 def prnt(*msg):
     for thing in msg:
         print thing
-
-def sendSimple(msg):
-    client.send_message("/test", msg.encode())
-    prnt("send")
 
 def thingToTag(thing):
     typ = type(thing)
@@ -60,21 +29,6 @@ def thingToTag(thing):
     elif typ == unicode:
         thing.encode('utf8')
         return 's'
-
-def sendMult(add, *msg):
-    global client
-    message = osc_message_builder.OscMessageBuilder(address=add)
-
-    for elem in msg:
-        prnt('Element:', elem)
-        tag = thingToTag(elem)
-        print tag
-        message.add_arg(elem, arg_type = tag)
-
-    message = message.build()
-    client.send(message)
-
-
 
 state = 'a'
 
@@ -159,7 +113,7 @@ def bufferPoll(index, txt):
 
 def flushBuffer():
     global buffer
-    data  = list(buffer)
+    data  = copy.deepcopy(buffer)
     buffer = []
     return data
 
@@ -195,7 +149,6 @@ def poll():
             elif keys[1] == choice:
                 index = 1
 
-            sendMult('/text', index, word)
             bufferPoll(index, word)
 
             if time.clock() >= timestamp + period:

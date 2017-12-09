@@ -1,10 +1,10 @@
 function sendOverride(index) {
-    $.post('http://enframed.net:7777/api/override/', { override: index }, function(){
+    $.post('http://enframed.net:5000/api/override/', { override: index }, function(){
       console.log(index);
-    }
+    });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     let cont = document.getElementById("control");
     console.log(cont);
     classes = ['dummy', 'smol', 'smol', 'smoler', 'smoler', 'smoler', 'dummy'];

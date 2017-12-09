@@ -12,21 +12,20 @@ function setRandomVoice() {
 }
 
 function getOptions(callback) {
-    $.get("http://enframed.net:7777/api/poll/", function(res){
-            console.log(res.body);
+    $.get("http://enframed.net:5000/api/poll/", function(res){
             let button1 = document.getElementById("choice-1");
             let button2 = document.getElementById("choice-2");
 
-            button1.word = res.body[0]['text'];
-            button2.word = res.body[1]['text'];
+            button1.word = res[0]['text'];
+            button2.word = res[1]['text'];
 
-            button1.choice = res.body[0]['key'];
-            button2.choice = res.body[1]['key'];
+            button1.choice = res[0]['key'];
+            button2.choice = res[1]['key'];
 
             button1.innerText = button1.word;
             button2.innerText = button2.word;
 
-            voice.setVolume(res.body[0]['volume']);
+            voice.setVolume(res[0]['volume']);
 
             if (callback) {
                 callback(button1, button2);
@@ -43,7 +42,7 @@ function sendVote(i) {
 
     voice.speak(button.word);
 
-    $.post("http://enframed.net:7777/api/poll",
+    $.post("http://enframed.net:5000/api/poll/",
       {word: button.word, choice: button.choice}
     ).done(getOptions());
 }
