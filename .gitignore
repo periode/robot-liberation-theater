@@ -8,3 +8,4 @@ openframeworks/libs/openFrameworksCompiled/lib/osx/openFrameworksDebug.a
 [Rr]elease*/
 .vs
 *.sln
+venv*
