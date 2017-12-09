@@ -1,4 +1,3 @@
-﻿var request = window.superagent;
 var voice;
 
 function setup() {
@@ -13,8 +12,7 @@ function setRandomVoice() {
 }
 
 function getOptions(callback) {
-    request.get('/api/poll/')
-        .end((err, res) => {
+    $.get("http://enframed.net:7777/api/poll/", function(res){
             console.log(res.body);
             let button1 = document.getElementById("choice-1");
             let button2 = document.getElementById("choice-2");
@@ -45,11 +43,9 @@ function sendVote(i) {
 
     voice.speak(button.word);
 
-    request.post('/api/poll/')
-        .type('form')
-        .send({ word: button.word })
-        .send({ choice: button.choice })
-        .end(getOptions);
+    $.post("http://enframed.net:7777/api/poll",
+      {word: button.word, choice: button.choice}
+    ).done(getOptions());
 }
 
 document.addEventListener('DOMContentLoaded', () => {

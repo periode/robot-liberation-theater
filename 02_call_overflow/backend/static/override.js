@@ -1,10 +1,7 @@
-var request = window.superagent;
-
 function sendOverride(index) {
-    request.post('/api/override/')
-        .type('form')
-        .send({ override: index })
-        .end(() => { console.log(index) });
+    $.post('http://enframed.net:7777/api/override/', { override: index }, function(){
+      console.log(index);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
