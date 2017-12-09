@@ -13,4 +13,4 @@ The Robot Liberation Theater is a series of performances entirely generated thro
 * Revolver - arantza and reine
 * navigator and wanderer robots - luize and nahil
 * Brooke in Brooklyn - mei and siba
-* love robot - grace and isabella
+* love at first byte - grace and isabella
