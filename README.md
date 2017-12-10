@@ -11,6 +11,6 @@ The Robot Liberation Theater is a series of performances entirely generated thro
 * Call Overflow - jennifer and mateo
 * By(t)e World - Ali and Lateefa
 * Revolver - arantza and reine
-* navigator and wanderer robots - luize and nahil
-* Brooke in Brooklyn - mei and siba
+* Co-pilot - luize and nahil
+* When in Brooklyn - mei and siba
 * love at first byte - grace and isabella
