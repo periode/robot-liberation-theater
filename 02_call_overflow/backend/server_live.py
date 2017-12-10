@@ -1,7 +1,5 @@
 # ====| OUT/LOUD - Flask Server |====
 
-# TODO: HOW TO OSC IF IP ISN'T LOCALHHOST??????
-
 from flask import Flask, render_template, request, url_for, jsonify, redirect
 import random
 import copy
@@ -105,15 +103,22 @@ buffer = []
 
 def bufferPoll(index, txt):
     global buffer
+    global state
     entry = {
         'index': index,
-        'message': txt
+        'message': txt,
+        'state': state
         }
     buffer.append(entry)
 
 def flushBuffer():
     global buffer
-    data  = copy.deepcopy(buffer)
+
+    if len(buffer) == 0:
+        data = [state]
+    else:
+        data  = copy.deepcopy(buffer)
+
     buffer = []
     return data
 

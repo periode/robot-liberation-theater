@@ -46,7 +46,25 @@ void ofApp::setup() {
 	font = ofTrueTypeFont();
 	font.load("Geo-Regular.ttf", 120);
 
-	ofBackground(0);
+	// Load recordings
+	vector<string> filenames = {
+		"ring_ring.mp3",
+		"calling_a_1.mp3",
+		"calling_a_2.mp3",
+		"calling_a_3.mp3",
+		"crisis_a_1.mp3",
+		"support_a_1.mp3",
+		"support_a_2.mp3",
+		"decline_a_1.mp3"
+	};
+
+	for (int i = 0; i < filenames.size(); ++i) {
+		ofSoundPlayer *player = new ofSoundPlayer();
+		player->load(filenames[i]);
+		clips.push_back(player);
+	}
+
+	ofBackground(255);
 }
 
 // --------- ### ------- ### ---------
@@ -58,7 +76,6 @@ bool ofApp::gotOscMessage() {
 		// receive the message yay
 		receiver.getNextMessage(message);
 
-		ofLogNotice("GOTS SOMETHING");
 		ofBackground(255);
 		//ofLogNotice(message.getArgAsString(0));
 		string address = message.getAddress();
@@ -89,7 +106,12 @@ bool ofApp::gotOscMessage() {
 		else if (address == "/text") {
 			int index = -1;
 			string text = "";
+			string state = "";
+			bool esc = false;
 			for (int i = 0; i < message.getNumArgs(); ++i) {
+				if (esc) {
+					break;
+				}
 				ofLogNotice(message.getArgTypeName(i));
 
 				switch (message.getArgType(i)) {
@@ -100,11 +122,27 @@ bool ofApp::gotOscMessage() {
 					index = int(message.getArgAsFloat(i));
 					break;
 				case OFXOSC_TYPE_STRING:
-					text = ofToString(message.getArgAsString(i));
+					if (i == 0) {
+						state = ofToString(message.getArgAsString(i));
+						esc = true;
+						break;
+					}
+					if (text == "") {
+						text = ofToString(message.getArgAsString(i));
+					}
+					else {
+						state = ofToString(message.getArgAsString(i));
+					}
 					break;
 				default:
 					continue;
 				}
+			}
+
+			if (state != "") {
+				checkState(state);
+				ofLogNotice("GOT STATE");
+				return true;
 			}
 
 			if (index == -1 || text == "") {
@@ -126,11 +164,51 @@ bool ofApp::gotOscMessage() {
 			messages[0].clear();
 			messages[1].clear();
 		}
+		else if (address == "/ready") {
+			started = true;
+		}
 	}
 
 	return ret;
 }
 
+void ofApp::checkState(string state) {
+	if (state == "") {
+		return;
+	}
+	char st = state[0];
+	int nextState = 141 - st;
+
+	if (nextState != ovrState) {
+		setState(nextState);
+	}
+}
+
+void ofApp::setState(int state) {
+	messages[0].clear();
+	messages[1].clear();
+
+	switch (state) {
+	case 0:
+		curClip = 1;
+		break;
+	case 1:
+	case 2:
+		curClip = 4;
+		break;
+	case 3:
+		curClip = 5;
+		break;
+	case 4:
+		curClip = 1;
+		break;
+	case 5:
+		curClip = 7;
+		break;
+	}
+
+	ovrState = state;
+}
 
 //--------------------------------------------------------------
 void ofApp::update() {
@@ -165,7 +243,11 @@ void ofApp::draw() {
 		float fh = font.stringHeight(siteUrl)*0.5;
 
 		ofPushMatrix();
-		ofTranslate(w - fw, h - fh);
+		ofTranslate(w*0.5, h*0.5);
+		ofScale(0.3, 0.3, 1);
+		ofTranslate(-fw, -fh);
+
+		ofSetColor(0);
 
 		font.drawString(siteUrl, 0, 0);
 
@@ -184,22 +266,30 @@ void ofApp::keyPressed(int key) {
 	string text = "";
 
 	switch (key) {
-	case 'a':
-	case 'A':
+	case 'w':
+	case 'W':
 		index = 0;
 		break;
-	case 'd':
-	case 'D':
+	case 's':
+	case 'S':
 		index = 1;
 		break;
+	case 'a':
+	case 'A':
+		clips[0]->setVolume(0.5);
+		clips[0]->play();
+		return;
+	case 'd':
+	case 'D':
+		clips[curClip]->play();
+		++curClip;
+		return;
 	case 'c':
 	case 'C':
-		messages[0].clear();
-		messages[1].clear();
-		ovrState++;
+		setState(ovrState + 1);
 		return;
 	case ' ':
-		ovrState = 0;
+		setState(0);
 		started = true;
 		return;
 	}

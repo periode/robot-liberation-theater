@@ -30,9 +30,15 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 		bool gotOscMessage();
+		void checkState(string state);
+		void setState(int state);
 		
 		ofxOscReceiver receiver;
 		ofTrueTypeFont font;
+
+		vector<ofSoundPlayer*> clips;
+		int curClip = 1;
+
 		bool started = false;
 
 		string siteUrl = "http://nyuad.im/call-overflow";

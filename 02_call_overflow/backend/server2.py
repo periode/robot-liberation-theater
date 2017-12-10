@@ -1,38 +1,37 @@
 # ====| OUT/LOUD - Flask Server |====
 
-# TODO: HOW TO OSC IF IP ISN'T LOCALHHOST??????
-
 from flask import Flask, render_template, request, url_for, jsonify, redirect
 import random
 import time
+import copy
 #import pyttsx
 import sys
-import socket
-from threading import Thread
+#import socket
+#from threading import Thread
 
-from pythonosc import osc_message_builder, udp_client, osc_bundle_builder, osc_server, dispatcher
+#from pythonosc import osc_message_builder, udp_client, osc_bundle_builder, osc_server, dispatcher
 
 app = Flask(__name__)
 
-ip = "127.0.0.1"
-ip2 = "10.226.10.21"
-ip3 = 'localhost'
-s_port = 2046
-r_port = 2056
+#ip = "127.0.0.1"
+#ip2 = "10.226.10.21"
+#ip3 = 'localhost'
+#s_port = 2046
+#r_port = 2056
 
 # OSC Client configuration: sends messages to OF
-client = udp_client.UDPClient(ip3, s_port)
+#client = udp_client.UDPClient(ip3, s_port)
 
 # OSC Server configuration: receives OF's IP Address
-oscServer = None
+#oscServer = None
 
-def clientSetup(unused, ip):
-    global oscServer
-    ipMaybe = oscServer.socket.getpeername()[0]
+#def clientSetup(unused, ip):
+#    global oscServer
+#    ipMaybe = oscServer.socket.getpeername()[0]
 
-    if oscServer is not None:
-        oscServer.shutdown()
-    print str(ipMaybe)
+#    if oscServer is not None:
+#        oscServer.shutdown()
+#    print str(ipMaybe)
 
 #disp = dispatcher.Dispatcher()
 #disp.map("/setup", clientSetup)
@@ -45,43 +44,41 @@ def prnt(*msg):
     for thing in msg:
         print thing
 
-def sendSimple(msg):
-    client.send_message("/test", msg.encode())
-    prnt("send")
+#def sendSimple(msg):
+#    client.send_message("/test", msg.encode())
+#    prnt("send")
 
-def thingToTag(thing):
-    typ = type(thing)
-    if typ == int:
-        return 'i'
-    elif typ == str:
-        return 's'
-    elif typ == float:
-        return 'f'
-    elif typ == unicode:
-        thing.encode('utf8')
-        return 's'
+#def thingToTag(thing):
+#    typ = type(thing)
+#    if typ == int:
+#        return 'i'
+#    elif typ == str:
+#        return 's'
+#    elif typ == float:
+#        return 'f'
+#    elif typ == unicode:
+#        thing.encode('utf8')
+#        return 's'
 
-def sendMult(add, *msg):
-    global client
-    message = osc_message_builder.OscMessageBuilder(address=add)
+#def sendMult(add, *msg):
+#    global client
+#    message = osc_message_builder.OscMessageBuilder(address=add)
 
-    for elem in msg:
-        prnt('Element:', elem)
-        tag = thingToTag(elem)
-        print tag
-        message.add_arg(elem, arg_type = tag)
+#    for elem in msg:
+#        prnt('Element:', elem)
+#        tag = thingToTag(elem)
+#        print tag
+#        message.add_arg(elem, arg_type = tag)
 
-    message = message.build()
-    client.send(message)
-
-
+#    message = message.build()
+#    client.send(message)
 
 state = 'a'
 
 content = {
     'a': {
-        'robot': [],
-        'calls': [],
+        #'robot': [],
+        #'calls': [],
         'poll': {
             'b': {
                 'options': ['yay', 'keep it up!', 'you are great', 'keep going', 'stick with it', 'you are so good'],
@@ -97,8 +94,8 @@ content = {
         'period': 90
         },
     'b': {
-        'robot': [],
-        'calls': [],
+        #'robot': [],
+        #'calls': [],
         'poll': {
             'd': {
                 'options':['you can do this', 'outgrow your shell!', 'no risk no gain', 'time to shine', 'do it!', 'believe yourself'],
@@ -114,8 +111,8 @@ content = {
         'period': 90
         },
     'c': {
-        'robot': [],
-        'calls': [],
+       # 'robot': [],
+        #'calls': [],
         'poll': {
             'e': {
                 'options':['stay in your comfort zone', 'what if you fail?', 'you could never...', "don't even think about it", 'are you mad?', 'you must be joking'],
@@ -131,16 +128,16 @@ content = {
         'period': 90
         },
     'd': {
-        'robot': [],
-        'calls': []
+       # 'robot': [],
+        #'calls': []
         },
     'e': {
-        'robot': [],
-        'calls': []
+        #'robot': [],
+        #'calls': []
         },
     'f': {
-        'robot': [],
-        'calls': []
+        #'robot': [],
+        #'calls': []
         }
     }
 
@@ -151,20 +148,28 @@ buffer = []
 
 def bufferPoll(index, txt):
     global buffer
+    global state
     entry = {
         'index': index,
-        'message': txt
+        'message': txt,
+        'state': state
         }
     buffer.append(entry)
 
 def flushBuffer():
     global buffer
-    data  = list(buffer)
+
+    if len(buffer) == 0:
+        data = [state]
+    else:
+        data  = copy.deepcopy(buffer)
+
     buffer = []
     return data
 
 @app.route('/')
 def root():
+    bufferPoll(0, 'fake')
     return "please visit nyuad.im/call-overflow"
 
 @app.route('/api/poll/', methods=['GET', 'POST'])
@@ -195,7 +200,7 @@ def poll():
             elif keys[1] == choice:
                 index = 1
 
-            sendMult('/text', index, word)
+            #sendMult('/text', index, word)
             bufferPoll(index, word)
 
             if time.clock() >= timestamp + period:
