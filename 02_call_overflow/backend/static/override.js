@@ -7,8 +7,8 @@ function sendOverride(index) {
 document.addEventListener('DOMContentLoaded', function() {
     let cont = document.getElementById("control");
     console.log(cont);
-    classes = ['dummy', 'smol', 'smol', 'smoler', 'smoler', 'smoler', 'dummy'];
-    text = ['CALLING', 'MOTIVATION', 'CRISIS', 'SUPPORT', 'STASIS', 'DECLINE', 'RING RING']
+    classes = ['dummy', 'smol', 'smol', 'smoler', 'smoler', 'smoler'];
+    text = ['CALLING', 'MOTIVATION', 'CRISIS', 'SUPPORT', 'STASIS', 'DECLINE']
 
     for (let i = 0; i < classes.length; ++i) {
         let button = document.createElement("button");

@@ -6,8 +6,22 @@ function setup() {
 }
 
 function setRandomVoice() {
-    let nVoices = window.speechSynthesis.getVoices().length;
-    let n = Math.floor(Math.random() * nVoices)
+    let daVoices = window.speechSynthesis.getVoices();
+    let nVoices = daVoices.length;
+    let valid = false;
+    let attempt = 0;
+    do {
+        let n = Math.floor(Math.random() * nVoices)
+        let curVoice = daVoices[n];
+
+        if (!curVoice.name.includes('Google')) {
+            valid = true;
+            this.setVoice(n);
+            return;
+        }
+
+        ++attempt;
+    } while (!valid && attempt < 200);
     this.setVoice(n);
 }
 
@@ -25,7 +39,9 @@ function getOptions(callback) {
             button1.innerText = button1.word;
             button2.innerText = button2.word;
 
-            voice.setVolume(res[0]['volume']);
+            let mappedVolume = 0.9 * res.body[0]['volume'] + 0.1;
+
+            voice.setVolume(mappedVolume);
 
             if (callback) {
                 callback(button1, button2);
@@ -40,6 +56,7 @@ function sendVote(i) {
         return;
     }
 
+    voice.cancel();
     voice.speak(button.word);
 
     $.post("http://enframed.net:5000/api/poll/",

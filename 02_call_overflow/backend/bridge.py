@@ -6,7 +6,7 @@ from pythonosc import osc_message_builder, udp_client, osc_bundle_builder
 import sys
 import getopt
 
-reqUrl = 'http://nyuad.im/call-overflow/api/data' # URL to server
+url = 'http://enframed.net:5000/api/data' # URL to server
 max = None                                        # Max requests
 count = 0                                         # Request counter
 
@@ -34,8 +34,39 @@ client = udp_client.UDPClient('localhost', port)
 # Sends JSON string data via OSC to OpenFrameworks
 def sendData(add, dataStr):
     global client
+    global count
+
+    print count
+
+    dOj = []
+    try:
+        dObj = json.loads(dataStr)
+    except ValueError:
+        return
+
+    if len(dObj) == 0:
+        return
+
     message = osc_message_builder.OscMessageBuilder(address = add)
-    message.add_arg(dataStr, arg_type = 's')
+    
+    for elem in dObj:
+        if type(elem) == str:
+            message.add_arg(elem, arg_type = 's')
+            break
+        elif type(elem) == unicode:
+            message.add_arg(elem.encode('utf8'), arg_type = 's')
+            break
+
+        for key in elem:
+            data = elem[key]
+            typ = type(data)
+
+            if typ == int:
+                message.add_arg(data, arg_type = 'i')
+            elif typ == str:
+                message.add_arg(data, arg_type = 's')
+            elif typ == unicode:
+                message.add_arg(data.encode('utf8'), arg_type = 's')
     message = message.build()
 
     client.send(message)
@@ -59,6 +90,7 @@ def checkData(data):
             print count
             return False
         print 'JSON : ' + str(count)
+        print obj
         return True
     except ValueError:
         print count
@@ -70,8 +102,7 @@ def updateOF():
     req = requests.get(url)    
     data = req.text
 
-    if checkData(data):
-        sendData('localhost', data)
+    sendData('/text', data)
     count += 1
 
 # Repeat ad infinitum (or until count == max)
