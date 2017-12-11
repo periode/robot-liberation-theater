@@ -37,4 +37,7 @@ class ofApp : public ofBaseApp{
         int bands;
     
         ofSoundPlayer Beat;
+        ofSoundPlayer other;
+    
+        bool isReact = false;
 };
