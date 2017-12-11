@@ -10,28 +10,40 @@ class ofApp : public ofBaseApp{
     ofFbo tex;
     ofxSyphonServer tex_server;
     
+    float cam_rotation;
+    
 //track code
+    
+    ofxSyphonServer mySyphonServer;
+    ofFbo myFbo;
+    
     int port_to_listen_to = 2046;
     ofxOscReceiver receiver;
     ofSoundPlayer mysound;
+    
+    ofImage sites;
+    ofImage subway;
+    
+    ofConePrimitive cone;
+    
     
     ofVec2f front;
     ofVec2f back;
     ofVec2f Ndirection;
     ofVec3f direction;
     ofVec3f position;
+    ofVec3f zaxis;
     
    
     float a;
     float b;
     
+//    float stepSize;
+    
     
     
 //movement
-    ofxPanel gui;
-    ofxSlider<float> alpha1;
-    ofxSlider<float> alpha2;
-    ofxSlider<float> distance;
+   
     ofImage image;
     ofMesh mesh;
     ofBoxPrimitive box;
@@ -83,8 +95,7 @@ class ofApp : public ofBaseApp{
     
 //front
     ofTrueTypeFont myfont;
-    
-    
+
 
 	public:
 		void setup();

@@ -5,28 +5,46 @@
 #include "ofxOsc.h"
 class ofApp : public ofBaseApp{
     
-//track code
+    ofFbo tex_map;
+    ofFbo tex_view;
+    ofxSyphonServer tex_map_server;
+    ofxSyphonServer tex_view_server;
+    
+    float cam_rotation;
+    
+    //track code
+    
+    ofxSyphonServer mySyphonServer;
+    ofFbo myFbo;
+    
     int port_to_listen_to = 2046;
     ofxOscReceiver receiver;
     ofSoundPlayer mysound;
+    
+    ofImage sites;
+    ofImage subway;
+    ofImage map;
+    
+    ofConePrimitive cone;
+    
     
     ofVec2f front;
     ofVec2f back;
     ofVec2f Ndirection;
     ofVec3f direction;
     ofVec3f position;
+    ofVec3f zaxis;
     
-   
+    
     float a;
     float b;
     
+    //    float stepSize;
     
     
-//movement
-    ofxPanel gui;
-    ofxSlider<float> alpha1;
-    ofxSlider<float> alpha2;
-    ofxSlider<float> distance;
+    
+    //movement
+    
     ofImage image;
     ofMesh mesh;
     ofBoxPrimitive box;
@@ -42,8 +60,8 @@ class ofApp : public ofBaseApp{
     float angleH;
     float roll;
     float depth;
-
-//mapping and tracking
+    
+    //mapping and tracking
     bool manual;
     bool sound;
     
@@ -55,7 +73,7 @@ class ofApp : public ofBaseApp{
     
     vector<float> height;
     vector<ofVec3f> cube_positions;
-   
+    
     vector<float> cube_sizesx;
     vector<float> cube_sizesy;
     vector<float> cube_sizesz;
@@ -76,26 +94,24 @@ class ofApp : public ofBaseApp{
     ofVec2f landmark5;
     ofVec2f landmark6;
     
-//front
+    //front
     ofTrueTypeFont myfont;
     
     
-
-	public:
-		void setup();
-		void update();
-		void draw();
-
-		void keyPressed(int key);
-		void keyReleased(int key);
-		void mouseMoved(int x, int y );
-		void mouseDragged(int x, int y, int button);
-		void mousePressed(int x, int y, int button);
-		void mouseReleased(int x, int y, int button);
-		void mouseEntered(int x, int y);
-		void mouseExited(int x, int y);
-		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
-		
+public:
+    void setup();
+    void update();
+    void draw();
+    
+    void keyPressed(int key);
+    void keyReleased(int key);
+    void mouseMoved(int x, int y );
+    void mouseDragged(int x, int y, int button);
+    void mousePressed(int x, int y, int button);
+    void mouseReleased(int x, int y, int button);
+    void mouseEntered(int x, int y);
+    void mouseExited(int x, int y);
+    void windowResized(int w, int h);
+    void dragEvent(ofDragInfo dragInfo);
+    void gotMessage(ofMessage msg);
 };

@@ -1,16 +1,16 @@
 #include "ofApp.h"
-#include "Bubble.cpp"
+
 
 //--------------------------------------------------------------
 void ofApp::setup() {
 
-	fbo.allocate(1024, 768, GL_RGBA);
-	syphon_server.setName("call overflow - syphon");
+
+
 
 	// set up the OSC receiver to listen for port
-	receiver.setup(PORT);
+	receiver.setup(R_PORT);
 
-	ofLogNotice("Listening on port " + ofToString(PORT));
+	ofLogNotice("Listening on port " + ofToString(R_PORT));
 
 	messages = vector<vector<Bubble>>();
 	messages.push_back(vector<Bubble>());
@@ -24,7 +24,7 @@ void ofApp::setup() {
 
 	for (int i = 0; i < ovrMss.size(); ++i) {//each (vector<vector<string>> l1 in ovrMss) {
 		vector<vector<string>> *l1 = &ovrMss[i];
-
+		
 		vector<string> opt0 = vector<string>();
 
 		opt0.push_back("keep it up");
@@ -45,16 +45,23 @@ void ofApp::setup() {
 
 	font = ofTrueTypeFont();
 	font.load("Geo-Regular.ttf", 120);
-
+	
 	// Load recordings
 	vector<string> filenames = {
-		"ring_ring.mp3",
+		"ring_ring.mp3", // 0 - RING
+		"calling_q_1.mp3", // 1- CALLING / STASIS
 		"calling_a_1.mp3",
+		"calling_q_2.mp3",
 		"calling_a_2.mp3",
+		"calling_q_3.mp3",
 		"calling_a_3.mp3",
-		"crisis_a_1.mp3",
+		"motivation_q_1.mp3", // 7 - MOTIVATION
+		"crisis_a_1.mp3", // 8 - CRISIS
+		"support_q_1.mp3", // 9 - SUPPORT
 		"support_a_1.mp3",
+		"support_q_2.mp3",
 		"support_a_2.mp3",
+		"decline_q_1.mp3", // 13 - DECLINE
 		"decline_a_1.mp3"
 	};
 
@@ -104,61 +111,83 @@ bool ofApp::gotOscMessage() {
 			}
 		}
 		else if (address == "/text") {
-			int index = -1;
-			string text = "";
-			string state = "";
+			ofLogNotice("GOTS SOMETHING");
+
+			//int index = -1;
+			vector<int> indices = vector<int>();
+			vector<string> texts = vector<string>();
+			vector<string> states = vector<string>();
+
 			bool esc = false;
 			for (int i = 0; i < message.getNumArgs(); ++i) {
 				if (esc) {
 					break;
 				}
 				ofLogNotice(message.getArgTypeName(i));
-
-				switch (message.getArgType(i)) {
-				case OFXOSC_TYPE_INT32:
-					index = message.getArgAsInt32(i);
-					break;
-				case OFXOSC_TYPE_FLOAT:
-					index = int(message.getArgAsFloat(i));
-					break;
-				case OFXOSC_TYPE_STRING:
-					if (i == 0) {
-						state = ofToString(message.getArgAsString(i));
+				switch (i % 3) {
+				case 0:
+					switch (message.getArgType(i)) {
+					case OFXOSC_TYPE_INT32:
+						indices.push_back(message.getArgAsInt(i));
+						break;
+					case OFXOSC_TYPE_STRING:
+						states.push_back(ofToString(message.getArgAsString(i)));
 						esc = true;
 						break;
 					}
-					if (text == "") {
-						text = ofToString(message.getArgAsString(i));
-					}
-					else {
-						state = ofToString(message.getArgAsString(i));
-					}
 					break;
-				default:
-					continue;
+				case 1:
+					texts.push_back(ofToString(message.getArgAsString(i)));
+				case 2:
+					states.push_back(ofToString(message.getArgAsString(i)));
+					break;
+					/*switch (message.getArgType(i)) {
+					case OFXOSC_TYPE_INT32:
+						index = message.getArgAsInt32(i);
+						break;
+					case OFXOSC_TYPE_FLOAT:
+						index = int(message.getArgAsFloat(i));
+						break;
+					case OFXOSC_TYPE_STRING:
+						if (i == 0) {
+							state = ofToString(message.getArgAsString(i));
+							esc = true;
+							break;
+						}
+						if (text == "") {
+							text = ofToString(message.getArgAsString(i));
+						}
+						else {
+							state = ofToString(message.getArgAsString(i));
+						}
+						break;
+					default:
+						continue;
+					}*/
 				}
 			}
 
-			if (state != "") {
-				checkState(state);
+			if (states.size() > 0) {
+				checkState(states[states.size()-1]);
 				ofLogNotice("GOT STATE");
-				return true;
 			}
 
-			if (index == -1 || text == "") {
-				ofLogError("IMPROPER DATA");
+			if (indices.size() == 0 || texts.size() == 0){//|| state == "") {
+				ofLogError("NO MESSAGE");
 				return false;
 			}
 
-			ofLogNotice(ofToString(index) + " : " + text);
+			for (int i = 0; i < indices.size(); ++i) {
+				ofLogNotice(ofToString(indices[i]) + " : " + texts[i]);
 
-			Bubble bub = Bubble(text, index);
+				Bubble bub = Bubble(texts[i], indices[i]);
 
-			messages[index].push_back(bub);
+				messages[indices[i]].push_back(bub);
 
-			ofLogNotice(ofToString(messages[index].size()));
+				ofLogNotice(ofToString(messages[indices[i]].size()));
 
-			ret = true;
+				ret = true;
+			}
 		}
 		else if (address == "/reset") {
 			messages[0].clear();
@@ -177,33 +206,42 @@ void ofApp::checkState(string state) {
 		return;
 	}
 	char st = state[0];
-	int nextState = 141 - st;
+	int nextState = st - 141; // 'a' should be 141 -> 0; 'b' : 142 -> 1S
 
 	if (nextState != ovrState) {
+		ofLogNotice("CHANGING STATE");
 		setState(nextState);
 	}
 }
 
 void ofApp::setState(int state) {
+	ofLogNotice(ofToString(state));
+
 	messages[0].clear();
 	messages[1].clear();
+
+	for each (ofSoundPlayer* cp in clips) {
+		cp->stop();
+	}
 
 	switch (state) {
 	case 0:
 		curClip = 1;
 		break;
 	case 1:
+		curClip = 7;
+		break;
 	case 2:
-		curClip = 4;
+		curClip = 8;
 		break;
 	case 3:
-		curClip = 5;
+		curClip = 9;
 		break;
 	case 4:
 		curClip = 1;
 		break;
 	case 5:
-		curClip = 7;
+		curClip = 13;
 		break;
 	}
 
@@ -224,7 +262,7 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	fbo.begin();
+	// fbo
 	float w = ofGetWidth();
 	float h = ofGetHeight();
 
@@ -254,10 +292,10 @@ void ofApp::draw() {
 		ofPopMatrix();
 	}
 
-	fbo.end();
-	syphon_server.publishTexture(&fbo.getTexture());
+	//fbo end
+	//syphon
 
-	fbo.draw(0, 0);
+	// draw fbo
 }
 
 //--------------------------------------------------------------
@@ -276,11 +314,17 @@ void ofApp::keyPressed(int key) {
 		break;
 	case 'a':
 	case 'A':
+		for each (ofSoundPlayer* cp in clips) {
+			cp->stop();
+		}
 		clips[0]->setVolume(0.5);
 		clips[0]->play();
 		return;
 	case 'd':
 	case 'D':
+		for each (ofSoundPlayer* cp in clips) {
+			cp->stop();
+		}
 		clips[curClip]->play();
 		++curClip;
 		return;
@@ -291,6 +335,14 @@ void ofApp::keyPressed(int key) {
 	case ' ':
 		setState(0);
 		started = true;
+		return;
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+		setState(key - 49);
 		return;
 	}
 	ofLogNotice(ofToString(ovrMss.size()));
