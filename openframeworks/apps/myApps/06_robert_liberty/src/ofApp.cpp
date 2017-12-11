@@ -3,12 +3,14 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-//------------SYPHON
-    tex_view_server.setName("06_view");
-    tex_map_server.setName("06_map");
+//    ofEnableDepthTest();
     
-    tex_view_server.allocate(1024, 768, GL_RGBA);
-    tex_map_server.allocate(1024, 768, GL_RGBA);
+//------------SYPHON
+    tex_server_view.setName("06_view");
+    tex_server_map.setName("06_map");
+    
+    tex_view.allocate(1024, 768, GL_RGBA);
+    tex_map.allocate(800, 605, GL_RGBA);
 
 //-------VIEW
 //set tracking
@@ -70,6 +72,7 @@ void ofApp::setup(){
    manual=false;
     
     sites.load("Map-Pin.png");
+    
     
     subway.load("subway.png");
     
@@ -168,48 +171,44 @@ void ofApp::draw(){
     
 
     ofPushMatrix();
-    ofTranslate(landmark1.x,landmark1.y, 0);
-    ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
-    ofPopMatrix();
-   
+
 
     ofPushMatrix();
     ofTranslate(landmark1.x,landmark1.y, 0);
     ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
+    sites.draw(0,0,30);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark2.x,landmark2.y, 0);
     ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
+    sites.draw(0,0,30);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark3.x,landmark3.y, 0);
     ofRotate(90, 1, 0, 0);
     ofRotate(90, 0, 1, 0);
-    sites.draw(0,0,0);
+    sites.draw(0,0,30);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark4.x,landmark4.y, 0);
     ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
+    sites.draw(0,0,30);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark5.x,landmark5.y, 0);
     ofRotate(90, 1, 0, 0);
     ofRotate(90, 0, 1, 0);
-    sites.draw(0,0,0);
+    sites.draw(0,0,30);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark6.x,landmark6.y, 0);
     ofRotate(90, 1, 0, 0);
-    subway.draw(0,0,0);
+    subway.draw(0,0,30);
     ofPopMatrix();
    
 //    ofDrawIcoSphere(landmark1.x,landmark1.y, 10);
@@ -224,7 +223,7 @@ void ofApp::draw(){
     cam.end();
    
     tex_view.end();
-    tex_view_server.publishTexture(tex_view.getTexture());
+    tex_server_view.publishTexture(&tex_view.getTexture());
     tex_view.draw(0, 0);
     
     
@@ -234,10 +233,10 @@ void ofApp::draw(){
     
     //--------MAP
     tex_map.begin();
-    map.draw();
+    map.draw(0, 0);
     tex_map.end();
-    tex_map_server.publishTexture(tex_map.getTexture());
-    tex_map.draw(0, 0);
+    tex_server_map.publishTexture(&tex_map.getTexture());
+    //tex_map.draw(0, 0);
     
 
 }
@@ -266,11 +265,11 @@ void ofApp::keyPressed(int key){
         
        
         
-        cam.move(-cam.getZAxis()*3);
+        cam.move(-cam.getZAxis()*5);
         
     }
     else if (key == OF_KEY_DOWN) {
-        cam.move(cam.getZAxis()*3);
+        cam.move(cam.getZAxis()*5);
         
     }
     

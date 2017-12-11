@@ -7,8 +7,10 @@
 
 class ofApp : public ofBaseApp{
     
-    ofFbo tex;
-    ofxSyphonServer tex_server;
+    ofFbo tex_view;
+    ofFbo tex_map;
+    ofxSyphonServer tex_server_view;
+    ofxSyphonServer tex_server_map;
     
     float cam_rotation;
     
@@ -23,6 +25,7 @@ class ofApp : public ofBaseApp{
     
     ofImage sites;
     ofImage subway;
+    ofImage map;
     
     ofConePrimitive cone;
     
