@@ -16,7 +16,8 @@ void ofApp::setup(){
     }
     
     bands = 64;
-    Beat.setLoop(true);
+    Beat.setLoop(false);
+    other.setLoop(false);
     Beat.setVolume(.5);
     
     //Beat.play();
@@ -24,12 +25,14 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    ofSoundUpdate();
-    float * value = ofSoundGetSpectrum(bands);
-    for (int i = 0; i<bands; i++) {
-        fftSmooth[i] *= 0.79f;
-        if (fftSmooth[i] < value[i]) {
-            fftSmooth[i] = value[i];
+    if (isReact == true){
+        ofSoundUpdate();
+        float * value = ofSoundGetSpectrum(bands);
+        for (int i = 0; i<bands; i++) {
+            fftSmooth[i] *= 0.79f;
+            if (fftSmooth[i] < value[i]) {
+                fftSmooth[i] = value[i];
+            }
         }
     }
 }
@@ -135,9 +138,25 @@ void ofApp::keyPressed(int key){
     switch (key) {
         case '1':
             Beat.play();
+            other.play();
             break;
         case '2':
             Beat.stop();
+            other.stop();
+            break;
+        case '3':
+            Beat.setPaused(true);
+            other.setPaused(true);
+            break;
+        case '4':
+            Beat.setPaused(false);
+            other.setPaused(false);
+            break;
+        case 's':
+            isReact = true;
+            break;
+        case 'a':
+            isReact = false;
             break;
     }
 }
