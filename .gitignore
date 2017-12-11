@@ -1,6 +1,5 @@
 .DS_Store
 openframeworks/libs/openFrameworksCompiled/lib/osx/openFrameworksDebug.a
-**/bin/
 [Oo]bj/
 *.o
 **/*.app
