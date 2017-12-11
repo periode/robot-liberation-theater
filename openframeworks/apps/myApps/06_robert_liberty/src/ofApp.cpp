@@ -3,9 +3,14 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    tex.allocate(1024, 768, GL_RGBA);
-    tex_server.setName("06_robert_liberty");
+//------------SYPHON
+    tex_view_server.setName("06_view");
+    tex_map_server.setName("06_map");
+    
+    tex_view_server.allocate(1024, 768, GL_RGBA);
+    tex_map_server.allocate(1024, 768, GL_RGBA);
 
+//-------VIEW
 //set tracking
     receiver.setup(port_to_listen_to);
     
@@ -87,6 +92,11 @@ void ofApp::setup(){
     myfont.loadFont("Arial Black.ttf", 64);
 
     
+    
+//-----MAP
+    map.load( "map.png");
+
+    
 }
 
 //--------------------------------------------------------------
@@ -133,8 +143,8 @@ ofLog()<<ofToString(cam.getGlobalPosition());
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    
-    tex.begin();
+    //--------MAP
+    tex_view.begin();
     ofClear(255,255,255, 0);
     cam.begin();
   
@@ -210,20 +220,24 @@ void ofApp::draw(){
 //    ofDrawIcoSphere(landmark6.x,landmark6.y, 10);
 //
     
-
-    
-    
-
-    
+ 
     cam.end();
-    
    
+    tex_view.end();
+    tex_view_server.publishTexture(tex_view.getTexture());
+    tex_view.draw(0, 0);
     
-
-    tex.end();
-    tex_server.publishTexture(&tex.getTexture());
     
-    tex.draw(0, 0);
+    
+    
+    
+    
+    //--------MAP
+    tex_map.begin();
+    map.draw();
+    tex_map.end();
+    tex_map_server.publishTexture(tex_map.getTexture());
+    tex_map.draw(0, 0);
     
 
 }
