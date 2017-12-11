@@ -9,6 +9,9 @@ void ofApp::setup(){
     tex_constellations_server.setName("05 - Constellations");
     
     tex_water.allocate(1024, 768, GL_RGBA);
+    tex_water.begin();
+    ofBackground(0);
+    tex_water.end();
     tex_constellations.allocate(1024, 768, GL_RGBA);
     
     //-------- CONSTELLATIONS
