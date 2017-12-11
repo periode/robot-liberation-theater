@@ -5,7 +5,10 @@
 void ofApp::setup() {
 
 
-
+    fbo.allocate(1024, 768, GL_RGBA);
+    server.setName("call overflow");
+    
+    
 
 	// set up the OSC receiver to listen for port
 	receiver.setup(R_PORT);
@@ -220,9 +223,13 @@ void ofApp::setState(int state) {
 	messages[0].clear();
 	messages[1].clear();
 
-	for each (ofSoundPlayer* cp in clips) {
-		cp->stop();
-	}
+//	for each (ofSoundPlayer* cp in clips) {
+//		cp->stop();
+//	}
+    
+    for (int i = 0; i < clips.size(); ++i) {
+        clips[i]->stop();
+    }
 
 	switch (state) {
 	case 0:
@@ -263,6 +270,7 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 	// fbo
+    fbo.begin();
 	float w = ofGetWidth();
 	float h = ofGetHeight();
 
@@ -292,10 +300,11 @@ void ofApp::draw() {
 		ofPopMatrix();
 	}
 
-	//fbo end
-	//syphon
+    fbo.end();
+    server.publishTexture(&fbo.getTexture());
 
 	// draw fbo
+    fbo.draw(0, 0);
 }
 
 //--------------------------------------------------------------
@@ -314,17 +323,23 @@ void ofApp::keyPressed(int key) {
 		break;
 	case 'a':
 	case 'A':
-		for each (ofSoundPlayer* cp in clips) {
-			cp->stop();
-		}
+//		for each (ofSoundPlayer* cp in clips) {
+//			cp->stop();
+//		}
+        for (int i = 0; i < clips.size(); ++i) {
+            clips[i]->stop();
+        }
 		clips[0]->setVolume(0.5);
 		clips[0]->play();
 		return;
 	case 'd':
 	case 'D':
-		for each (ofSoundPlayer* cp in clips) {
-			cp->stop();
-		}
+//		for each (ofSoundPlayer* cp in clips) {
+//			cp->stop();
+//		}
+        for (int i = 0; i < clips.size(); ++i) {
+            clips[i]->stop();
+        }
 		clips[curClip]->play();
 		++curClip;
 		return;

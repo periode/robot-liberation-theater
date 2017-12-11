@@ -1,15 +1,19 @@
 #pragma once
 
 #include "ofMain.h"
-#include "../addons/ofxOsc/src/ofxOsc.h"
+//#include "../addons/ofxOsc/src/ofxOsc.h"
 #include "ofxOsc.h"
-#include "../Bubble.h"
+#include "Bubble.h"
+#include "ofxSyphon.h"
 //#include "ofxNetworkUtils.h"
 
 #define R_PORT 2046
 #define S_PORT 2056
 
 class ofApp : public ofBaseApp{
+    
+    ofFbo fbo;
+    ofxSyphonServer server;
 
 	public:
 		void setup();
