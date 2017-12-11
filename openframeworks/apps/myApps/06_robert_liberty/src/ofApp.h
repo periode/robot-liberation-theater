@@ -23,6 +23,8 @@ class ofApp : public ofBaseApp{
     ofxOscReceiver receiver;
     ofSoundPlayer mysound;
     
+    float backgroundc;
+    
     ofImage sites;
     ofImage subway;
     ofImage map;

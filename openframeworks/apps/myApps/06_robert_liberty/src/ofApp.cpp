@@ -17,7 +17,8 @@ void ofApp::setup(){
     receiver.setup(port_to_listen_to);
     
 //set background
-    ofBackground(255);
+    backgroundc=255;
+    ofBackground(backgroundc);
     
 //set boxes
     
@@ -77,18 +78,18 @@ void ofApp::setup(){
     subway.load("subway.png");
     
     
-    sites.setAnchorPoint(sites.getWidth()/2, sites.getHeight()/2);
+    sites.setAnchorPoint(sites.getWidth()/2, 0);
     subway.setAnchorPoint(sites.getWidth()/2, sites.getHeight()/2);
     
   
     
    
-    landmark1.set(100,200);
-    landmark2.set(100,400);
-    landmark3.set(300,400);
-    landmark4.set(300,100);
-    landmark5.set(500,100);
-    landmark6.set(500,400);
+    landmark1.set(105,200);
+    landmark2.set(105,350);
+    landmark3.set(230,350);
+    landmark4.set(230,195);
+    landmark5.set(410,195);
+    landmark6.set(410,300);
 
     
 //front
@@ -104,6 +105,10 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
+    ofBackground(backgroundc);
+
+    
 ////tracking
     if(receiver.hasWaitingMessages()){
         ofxOscMessage msg;
@@ -146,9 +151,13 @@ ofLog()<<ofToString(cam.getGlobalPosition());
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    
+    
     //--------MAP
     tex_view.begin();
+  
     ofClear(255,255,255, 0);
+    ofBackground(backgroundc);
     cam.begin();
   
     ofSetColor(100,100,100);
@@ -157,7 +166,7 @@ void ofApp::draw(){
     ofDrawGridPlane(2,10000,false);
     ofPopMatrix();
 
-
+    ofEnableDepthTest();
      for(int i = 0; i < cube_positions.size(); i++){
         ofSetColor(color_bank[i],95);
         box.set(cube_sizesx[i],cube_sizesy[i],cube_sizesz[i]);
@@ -221,7 +230,8 @@ void ofApp::draw(){
     
  
     cam.end();
-   
+    
+    ofDisableDepthTest();
     tex_view.end();
     tex_server_view.publishTexture(&tex_view.getTexture());
     tex_view.draw(0, 0);
@@ -237,6 +247,7 @@ void ofApp::draw(){
     tex_map.end();
     tex_server_map.publishTexture(&tex_map.getTexture());
     //tex_map.draw(0, 0);
+    
     
 
 }
@@ -306,13 +317,11 @@ void ofApp::keyPressed(int key){
         mysound.play();
     }
     else if(key == 'b'){
-        ofBackground(0);
-        ofSetColor(255);
-        myfont.drawString("NYC Subway", 50,50);
+        backgroundc=0;
         
     }
     else if(key == 'w'){
-        ofBackground(255);
+        backgroundc=255;
        
     }
    
