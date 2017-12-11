@@ -39,7 +39,7 @@ function getOptions(callback) {
             button1.innerText = button1.word;
             button2.innerText = button2.word;
 
-            let mappedVolume = 0.9 * res[0]['volume'] + 0.1;
+            let mappedVolume = 1; //0.9 * res[0]['volume'] + 0.1;
 
             voice.setVolume(mappedVolume);
 
