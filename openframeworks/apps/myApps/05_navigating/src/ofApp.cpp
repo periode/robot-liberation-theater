@@ -4,6 +4,15 @@
 void ofApp::setup(){
     
     
+    dialogue1.load("NewDialogue1.mp3");
+    dialogue2.load("NewDialogue2.mp3");
+    dialogue3.load("NewDialogue3.mp3");
+    dialogue4.load("NewDialogue4.mp3");
+    dialogue5.load("NewDialogue5.mp3");
+    dialogue6.load("NewDialogue6.mp3");
+    dialogue7.load("NewDialogue7.mp3");
+    backgroundSound.load("OceanBackground.mp3");
+    
     //-------- SYPHON
     tex_water_server.setName("05 - Water");
     tex_constellations_server.setName("05 - Constellations");
@@ -39,7 +48,6 @@ void ofApp::setup(){
     //-------- WATER
     
     ofDisableArbTex();
-    ofLoadImage(texture,"water_texture.jpg");
     gui.add(time_scale.setup("time_scale", 0.001, 0.1, 1.0));
     gui.add(displacement.setup("displacement", 0.1, 0, 150));
     scl = 25; // Set Scale of grids
@@ -232,6 +240,54 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    if(key == 'q'){
+        dialogue1.setPaused(false);
+        dialogue1.play();
+    }
+    
+    if(key == 'w'){
+        dialogue2.setPaused(false);
+        dialogue2.play();
+    }
+    
+    if(key == 'e'){
+        dialogue3.setPaused(false);
+        dialogue3.play();
+    }
+    
+    if(key == 'r'){
+        dialogue4.setPaused(false);
+        dialogue4.play();
+    }
+    
+    if(key == 't'){
+        dialogue5.setPaused(false);
+        dialogue5.play();
+    }
+    
+    if(key == 'y'){
+        dialogue6.setPaused(false);
+        dialogue6.play();
+    }
+    
+    if(key == 'u'){
+        dialogue7.setPaused(false);
+        dialogue7.play();
+    }
+    
+    if(key == 'p'){
+        backgroundSound.play();
+    }
+    
+    if(key == 's'){
+        dialogue1.setPaused(true);
+        dialogue2.setPaused(true);
+        dialogue3.setPaused(true);
+        dialogue4.setPaused(true);
+        dialogue5.setPaused(true);
+        dialogue6.setPaused(true);
+        dialogue7.setPaused(true);
+    }
 
 }
 
