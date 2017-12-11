@@ -48,13 +48,20 @@ void ofApp::setup() {
 
 	// Load recordings
 	vector<string> filenames = {
-		"ring_ring.mp3",
+		"ring_ring.mp3", // 0 - RING
+		"calling_q_1.mp3", // 1- CALLING / STASIS
 		"calling_a_1.mp3",
+		"calling_q_2.mp3",
 		"calling_a_2.mp3",
+		"calling_q_3.mp3",
 		"calling_a_3.mp3",
-		"crisis_a_1.mp3",
+		"motivation_q_1.mp3", // 7 - MOTIVATION
+		"crisis_a_1.mp3", // 8 - CRISIS
+		"support_q_1.mp3", // 9 - SUPPORT
 		"support_a_1.mp3",
+		"support_q_2.mp3",
 		"support_a_2.mp3",
+		"decline_q_1.mp3", // 13 - DECLINE
 		"decline_a_1.mp3"
 	};
 
@@ -188,22 +195,28 @@ void ofApp::setState(int state) {
 	messages[0].clear();
 	messages[1].clear();
 
+	for each (ofSoundPlayer* cp in clips) {
+		cp->stop();
+	}
+
 	switch (state) {
 	case 0:
 		curClip = 1;
 		break;
 	case 1:
+		curClip = 7;
+		break;
 	case 2:
-		curClip = 4;
+		curClip = 8;
 		break;
 	case 3:
-		curClip = 5;
+		curClip = 9;
 		break;
 	case 4:
 		curClip = 1;
 		break;
 	case 5:
-		curClip = 7;
+		curClip = 12;
 		break;
 	}
 
@@ -276,11 +289,18 @@ void ofApp::keyPressed(int key) {
 		break;
 	case 'a':
 	case 'A':
+		for each (ofSoundPlayer* cp in clips) {
+			cp->stop();
+		}
+
 		clips[0]->setVolume(0.5);
 		clips[0]->play();
 		return;
 	case 'd':
 	case 'D':
+		for each (ofSoundPlayer* cp in clips) {
+			cp->stop();
+		}
 		clips[curClip]->play();
 		++curClip;
 		return;
@@ -291,6 +311,14 @@ void ofApp::keyPressed(int key) {
 	case ' ':
 		setState(0);
 		started = true;
+		return;
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+		setState(141 - key);
 		return;
 	}
 	ofLogNotice(ofToString(ovrMss.size()));
