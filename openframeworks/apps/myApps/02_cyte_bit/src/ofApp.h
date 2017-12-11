@@ -6,8 +6,11 @@
 
 class ofApp : public ofBaseApp{
     
-    ofxSyphonServer syphon_server;
-    ofFbo fbo;
+    ofxSyphonServer syphon_server_dock;
+    ofFbo fbo_dock;
+    ofxSyphonServer syphon_server_cyte;
+    ofFbo fbo_cyte;
+
 
 	public:
 		void setup();
@@ -27,5 +30,11 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		ofxPanel gui;
 		
-		
+        float * fftSmooth;
+        float * fftSmoothClap;
+        bool isSaving = false;
+    
+        int bands;
+    
+        ofSoundPlayer Beat;
 };
