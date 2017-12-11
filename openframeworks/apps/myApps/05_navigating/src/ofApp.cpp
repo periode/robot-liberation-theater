@@ -14,20 +14,17 @@ void ofApp::setup(){
     //-------- CONSTELLATIONS
     
     gui.setup("variables");
-    gui.add(numberOfStars.setup("numberOfStars", 50, 20, 500));
+    gui.add(numberOfStars.setup("numberOfStars", 50, 20, 300));
     gui.add(starRadius.setup("starRadius", 3, 0.1, 5.1));
-    gui.add(colorHue.setup("colorHue", 100, 0, 255));
-    gui.add(colorSaturation.setup("colorSaturation", 128, 0, 255));
-    gui.add(colorBrightness.setup("colorBrightness", 0, 0, 255));
     gui.add(speed.setup("speed", 1, 1, 8));
     gui.add(lerp1.setup("lerp1", 1, 0, 1));
     gui.add(lerp2.setup("lerp2", 0, 0, 1));
     gui.add(distanceBetweenStars.setup("distanceBetweenStars", 125, 40, 450));
     gui.add(linesAppearing.setup("linesAppearing", 2000, 100, 10000));
-    gui.add(starColorHue.setup("starColorHue", 255, 0, 255));
-    gui.add(starColorSaturation.setup("starColorSaturation", 255, 0, 255));
-    gui.add(starColorBrightness.setup("starColorBrightness", 255, 0, 255));
-    
+//    gui.add(starColorHue.setup("starColorHue", 255, 0, 255));
+//    gui.add(starColorSaturation.setup("starColorSaturation", 255, 0, 255));
+//    gui.add(starColorBrightness.setup("starColorBrightness", 255, 0, 255));
+//    
     
     for (int i = 0; i < 500; i++) {
         ofVec3f p;
@@ -103,7 +100,7 @@ void ofApp::update(){
     
     // ------ CONSTELLATIONS
     
-    backgroundColor.setHsb(colorHue, colorSaturation, colorBrightness);
+    //backgroundColor.setHsb(colorHue, colorSaturation, colorBrightness);
     
     for (int i = 0; i < numberOfStars; i++) {
         
@@ -147,10 +144,10 @@ void ofApp::draw(){
     for (int i = 0; i < numberOfStars; i++) {
         
         //draw star
-        for (float j = 0; j < starRadius; j+=0.05) {
+        for (float j = 0; j < starRadius; j+=0.2) {
             float bright = pow(2-log2(j*0.5)*2, 2);
             float pulsate = ofNoise(ofGetElapsedTimef()*0.3, i)*5;
-            ofSetColor(starColorHue,starColorSaturation,starColorBrightness, bright+pulsate);
+            ofSetColor(255, 255, 255, bright+pulsate);
             
             ofDrawEllipse(positionStars[i], 1+exp(j*1.1), 1+exp(j*1.1));
             
@@ -177,7 +174,7 @@ void ofApp::draw(){
                     ofSetLineWidth(lineWidth);
                     lineWidth = ofRandom(minLineWidth, maxLineWidth);
                     float alpha = ofMap(lineWidth, minLineWidth, maxLineWidth, 120, 3);
-                    ofSetColor(starColorHue,starColorSaturation,starColorBrightness, alpha);
+                    ofSetColor(255, 255, 255, alpha);
                     
                     ofDrawLine(v3, v4);
                     
@@ -207,9 +204,9 @@ void ofApp::draw(){
     ofEnableLighting();
     light.enable();
     
-    texture.bind();
-    mesh.draw();
-    texture.unbind();
+//    texture.bind();
+//    mesh.draw();
+//    texture.unbind();
     
     light.disable();
     ofDisableLighting();
