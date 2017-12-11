@@ -1,16 +1,15 @@
 #pragma once
 
 #include "ofMain.h"
+#include "../addons/ofxOsc/src/ofxOsc.h"
 #include "ofxOsc.h"
-#include "Bubble.h"
-#include "ofxSyphon.h"
+#include "../Bubble.h"
+//#include "ofxNetworkUtils.h"
 
-#define PORT 2046
+#define R_PORT 2046
+#define S_PORT 2056
 
 class ofApp : public ofBaseApp{
-    
-    ofFbo fbo;
-    ofxSyphonServer syphon_server;
 
 	public:
 		void setup();
@@ -39,12 +38,13 @@ class ofApp : public ofBaseApp{
 		vector<ofSoundPlayer*> clips;
 		int curClip = 1;
 
+		vector<vector<Bubble>> messages;
+
 		bool started = false;
 
 		string siteUrl = "http://nyuad.im/call-overflow";
 
-		vector<vector<Bubble>> messages;
-
 		int ovrState = 0;
 		vector<vector<vector<string>>> ovrMss;
+
 };
