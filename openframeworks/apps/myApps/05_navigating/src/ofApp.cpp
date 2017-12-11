@@ -2,313 +2,237 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    tex_map.allocate(800, 605, GL_RGBA);
-    tex_view.allocate(1024, 768, GL_RGBA);
     
-    tex_server_map.setName("06 - map");
-    tex_server_view.setName("06 - view");
     
-    //set tracking
-    receiver.setup(port_to_listen_to);
+    //-------- SYPHON
+    tex_water_server.setName("05 - Water");
+    tex_constellations_server.setName("05 - Constellations");
     
-    //set background
-    ofBackground(255);
+    tex_water.allocate(1024, 768, GL_RGBA);
+    tex_constellations.allocate(1024, 768, GL_RGBA);
     
-    //set boxes
+    //-------- CONSTELLATIONS
     
-    for (int x=0; x<50; x++) {
-        for (int y=0; y<50; y++) {
-            ofVec3f cube_pos(int(ofRandom(0, ofGetWidth()/30))*30, int(ofRandom(0, ofGetHeight()/30))*30);
+    gui.setup("variables");
+    gui.add(numberOfStars.setup("numberOfStars", 50, 20, 500));
+    gui.add(starRadius.setup("starRadius", 3, 0.1, 5.1));
+    gui.add(colorHue.setup("colorHue", 100, 0, 255));
+    gui.add(colorSaturation.setup("colorSaturation", 128, 0, 255));
+    gui.add(colorBrightness.setup("colorBrightness", 0, 0, 255));
+    gui.add(speed.setup("speed", 1, 1, 8));
+    gui.add(lerp1.setup("lerp1", 1, 0, 1));
+    gui.add(lerp2.setup("lerp2", 0, 0, 1));
+    gui.add(distanceBetweenStars.setup("distanceBetweenStars", 125, 40, 450));
+    gui.add(linesAppearing.setup("linesAppearing", 2000, 100, 10000));
+    gui.add(starColorHue.setup("starColorHue", 255, 0, 255));
+    gui.add(starColorSaturation.setup("starColorSaturation", 255, 0, 255));
+    gui.add(starColorBrightness.setup("starColorBrightness", 255, 0, 255));
+    
+    
+    for (int i = 0; i < 500; i++) {
+        ofVec3f p;
+        p.set(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()), -ofRandom(30000));
+        positionStars.push_back(p);
+        
+    }
+    
+    //-------- WATER
+    
+    ofDisableArbTex();
+    ofLoadImage(texture,"water_texture.jpg");
+    gui.add(time_scale.setup("time_scale", 0.001, 0.1, 1.0));
+    gui.add(displacement.setup("displacement", 0.1, 0, 150));
+    scl = 25; // Set Scale of grids
+    
+    terrainW = 2200;
+    terrainH = 1692;
+    
+    
+    cols = terrainW / scl; // set rows per scl
+    rows = terrainH / scl; // set columns per scl
+    
+    
+    cout << "columns numbers: " << cols << endl;
+    cout << "rows numbers: " << cols << endl;
+    
+    mesh.setMode(OF_PRIMITIVE_TRIANGLES);
+    
+    
+    for (int j = 0; j < rows; j++) {
+        xoff = 0;
+        for (int i = 0 ; i < cols; i++) {
             
-            cube_positions.push_back(cube_pos);
-            
-            float cube_sizex=ofRandom(0, 20);
-            float cube_sizey=ofRandom(0, 20);
-            float cube_sizez=ofRandom(0, 20);
-            
-            cube_sizesx.push_back(cube_sizex);
-            cube_sizesy.push_back(cube_sizey);
-            cube_sizesz.push_back(cube_sizez);
-            
-            
-            float randomColor=ofRandom(30,240);
-            
-            color_bank.push_back(randomColor);
+            float x = i*scl;
+            float y = j*scl;
+            //float z = ofRandom(-10,10);
+            float z = ofMap(ofNoise(yoff, xoff),0,1,-50,50);
+            mesh.addVertex(ofVec3f(x,y,z));
+            startPositions.push_back(ofVec3f(x,y,z));
+            offsets.push_back(ofVec3f(ofRandom(0,100000), ofRandom(0,100000), ofRandom(0,100000)));
+            mesh.addColor(ofFloatColor(1,1,1));
             
             
+            xoff += 0.1;
         }
+        yoff += 0.1;
     }
     
     
     
-    //set camera
     
-    bOrbit = bRoll = false;
-    angleH =90.f;
-    roll = 90.f;
-    
-    depth = 1000.f;
-    
-    zaxis.set(0,0,1);
-    
-    
-    cam.orbit(angleH, 0 , depth);
-    cam.roll(roll);
-    cam_rotation = 270.f;
-    cam.rotate(cam_rotation,zaxis);
-    
-    cam.setGlobalPosition(100,0,5);
-    //    cam.setGlobalPosition(ofGetWindowWidth()/2,ofGetWindowHeight()/2,500);
-    //
-    
-    
-    
-    //mapping
-    manual=false;
-    
-    sites.load("Map-Pin.png");
-    
-    subway.load("subway.png");
-    
-    
-    sites.setAnchorPoint(sites.getWidth()/2, sites.getHeight()/2);
-    subway.setAnchorPoint(sites.getWidth()/2, sites.getHeight()/2);
-    
-    
-    
-    
-    landmark1.set(100,200);
-    landmark2.set(100,400);
-    landmark3.set(300,400);
-    landmark4.set(300,100);
-    landmark5.set(500,100);
-    landmark6.set(500,400);
-    
-    
-    //front
-    myfont.loadFont("Arial Black.ttf", 64);
+    // Generate order of indices to set triangles per rows and column
+    for (int j = 0; j < rows - 1 ; j++) {
+        for (int i = 0 ; i < cols - 1; i++) {
+            
+            mesh.addIndex(i+j*cols);         // 0
+            mesh.addIndex((i+1)+j*cols);     // 1
+            mesh.addIndex(i+(j+1)*cols);     // 6
+            
+            mesh.addIndex((i+1)+j*cols);     // 1
+            mesh.addIndex((i+1)+(j+1)*cols); // 7
+            mesh.addIndex(i+(j+1)*cols);     // 6
+        }
+    }
 
-    
+
+
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    ////tracking
-    if(receiver.hasWaitingMessages()){
-        ofxOscMessage msg;
-        receiver.getNextMessage(&msg);
+    
+    // ------ CONSTELLATIONS
+    
+    backgroundColor.setHsb(colorHue, colorSaturation, colorBrightness);
+    
+    for (int i = 0; i < numberOfStars; i++) {
         
-        
-        if ( msg.getAddress() == "/position/front") {
-            front.x = (msg.getArgAsFloat( 0 ));
-            front.y = (msg.getArgAsFloat( 1 ));
-            
-            
+        for (int s = 0; s < speed; s++){
+            float starSpeed = 6+s;
+            positionStars[i].z += starSpeed += 0.5;
         }
         
-        if ( msg.getAddress() == "/position/back" ) {
-            back.x = (msg.getArgAsFloat( 0 ));
-            back.y = (msg.getArgAsFloat( 1 ));
+        if (positionStars[i].z > 1000){
+            positionStars[i].z = -10000-ofRandom(20000);
         }
-        
     }
     
-    
-    //     if (manual==false){
-    
-    //         position.interpolate(front, 0.1);
-    
-    //         direction.set(front.x-back.x,front.y-back.y,0);
-    
-    //         cam.setGlobalPosition(position[0],position[1],0);
-    
-    // //        cam.setOrientation(direction);
-    
-    // //        ofLog()<<ofToString(cam.getGlobalPosition());
-    
-    
-    //     }
-    
-    ofLog()<<ofToString(cam.getGlobalPosition());
-
+    // ------ WATER
+    int numVerts = mesh.getNumVertices();
+    for (int i=0; i<numVerts; ++i) {
+        ofVec3f vert = mesh.getVertex(i);
+        
+        float time = ofGetElapsedTimef();
+        float timeScale = time_scale;
+        float displacementScale = displacement;
+        ofVec3f start = startPositions[i];
+        ofVec3f timeOffsets = offsets[i];
+        
+        //        vert.x = start.x + (ofSignedNoise(time*timeScale,start.x*0.0001)) * displacementScale;
+        vert.y = start.y + (ofSignedNoise(time*timeScale, start.x*0.0000000000001)) * displacementScale;
+        vert.z = start.z + (ofSignedNoise(time*timeScale, i*0.001)) * displacementScale;
+        mesh.setVertex(i, vert);
+    }
 
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    tex_view.begin();
-    ofClear(255,255,255, 0);
-    cam.begin();
     
-    ofSetColor(100,100,100);
-    ofPushMatrix();
-    ofRotate(90, 0, 1, 0);
-    ofDrawGridPlane(2,10000,false);
-    ofPopMatrix();
+    //------- CONSTELLATIONS
+    tex_constellations.begin();
+    ofBackground(0);
     
-    
-    for(int i = 0; i < cube_positions.size(); i++){
-        ofSetColor(color_bank[i],95);
-        box.set(cube_sizesx[i],cube_sizesy[i],cube_sizesz[i]);
-        box.setPosition(cube_positions[i].x, cube_positions[i].y, cube_positions[i].z+cube_sizesz[i]/2);
-        box.draw();
+    for (int i = 0; i < numberOfStars; i++) {
+        
+        //draw star
+        for (float j = 0; j < starRadius; j+=0.05) {
+            float bright = pow(2-log2(j*0.5)*2, 2);
+            float pulsate = ofNoise(ofGetElapsedTimef()*0.3, i)*5;
+            ofSetColor(starColorHue,starColorSaturation,starColorBrightness, bright+pulsate);
+            
+            ofDrawEllipse(positionStars[i], 1+exp(j*1.1), 1+exp(j*1.1));
+            
+        }
+        
+        if(positionStars[i].z > -linesAppearing){
+            for (int k = 0; k < numberOfStars; k++) {
+                ofVec2f star1;
+                ofVec2f star2;
+                
+                
+                star1.set(positionStars[i].x, positionStars[i].y);
+                star2.set(positionStars[k].x, positionStars[k].y);
+                float distance = positionStars[i].distance(positionStars[k]);
+                
+                
+                if (distance < distanceBetweenStars) {
+                    
+                    ofVec3f v3 = positionStars[i].getInterpolated(positionStars[k], lerp1);
+                    ofVec3f v4 = positionStars[i].getInterpolated(positionStars[k], lerp2);
+                    float lineWidth;
+                    float minLineWidth = 0.01;
+                    float maxLineWidth = 3.0;
+                    ofSetLineWidth(lineWidth);
+                    lineWidth = ofRandom(minLineWidth, maxLineWidth);
+                    float alpha = ofMap(lineWidth, minLineWidth, maxLineWidth, 120, 3);
+                    ofSetColor(starColorHue,starColorSaturation,starColorBrightness, alpha);
+                    
+                    ofDrawLine(v3, v4);
+                    
+                    
+                }
+            }
+        }
+        
     }
     
+    tex_constellations.end();
+    tex_constellations_server.publishTexture(&tex_constellations.getTexture());
+    
+    
+    //------------------------------------ WATER
+    
+    tex_water.begin();
+    
+    ofBackgroundGradient( ofColor(40,40,40), ofColor(0,0,0), OF_GRADIENT_CIRCULAR);
+    
     ofPushMatrix();
+    ofTranslate(ofGetWidth()*0.5 - terrainW*0.5 + scl*0.5, ofGetHeight()*0.5 - terrainH*0.5 + scl*0.5);
+    
+    
+    
+    
+    ofEnableLighting();
+    light.enable();
+    
+    texture.bind();
+    mesh.draw();
+    texture.unbind();
+    
+    light.disable();
+    ofDisableLighting();
     
     ofSetColor(255);
+    mesh.drawWireframe();
     
     
-    ofPushMatrix();
-    ofTranslate(landmark1.x,landmark1.y, 0);
-    ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
+    
     ofPopMatrix();
     
+    tex_water.end();
+    tex_water_server.publishTexture(&tex_water.getTexture());
     
-    ofPushMatrix();
-    ofTranslate(landmark1.x,landmark1.y, 0);
-    ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
-    ofPopMatrix();
+    tex_water.draw(0, 0);
     
-    ofPushMatrix();
-    ofTranslate(landmark2.x,landmark2.y, 0);
-    ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
-    ofPopMatrix();
-    
-    ofPushMatrix();
-    ofTranslate(landmark3.x,landmark3.y, 0);
-    ofRotate(90, 1, 0, 0);
-    ofRotate(90, 0, 1, 0);
-    sites.draw(0,0,0);
-    ofPopMatrix();
-    
-    ofPushMatrix();
-    ofTranslate(landmark4.x,landmark4.y, 0);
-    ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
-    ofPopMatrix();
-    
-    ofPushMatrix();
-    ofTranslate(landmark5.x,landmark5.y, 0);
-    ofRotate(90, 1, 0, 0);
-    ofRotate(90, 0, 1, 0);
-    sites.draw(0,0,0);
-    ofPopMatrix();
-    
-    ofPushMatrix();
-    ofTranslate(landmark6.x,landmark6.y, 0);
-    ofRotate(90, 1, 0, 0);
-    subway.draw(0,0,0);
-    ofPopMatrix();
-    
-    //    ofDrawIcoSphere(landmark1.x,landmark1.y, 10);
-    //    ofDrawIcoSphere(landmark2.x,landmark2.y, 10);
-    //    ofDrawIcoSphere(landmark3.x,landmark3.y, 10);
-    //    ofDrawIcoSphere(landmark4.x,landmark4.y, 10);
-    //    ofDrawIcoSphere(landmark5.x,landmark5.y, 10);
-    //    ofDrawIcoSphere(landmark6.x,landmark6.y, 10);
-    //
-    
-    
-    
-    
-    
-    
-    cam.end();
-    
-    
-    
-    
-    tex_view.end();
-    tex_server_view.publishTexture(&tex_view.getTexture());
-    
-    tex_view.draw(0, 0);
-    
-    tex_map.begin();
-    map.draw(0, 0);
-    tex_map.end();
-    tex_server_map.publishTexture(&tex_map.getTexture());
+    gui.draw();
+
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if (key == 'm') {
-        manual=!manual;
-    }
-    if (key == 'a') {
-        manual=false;
-    }
-    if (key == OF_KEY_LEFT) {
-        cam.rotate(5.f, zaxis);
-        
-    }
-    else if (key == OF_KEY_RIGHT) {
-        cam.rotate(-5.f, zaxis);
-        
-    }
-    else if (key == OF_KEY_UP) {
-        //find the forward vector
-        ofVec3f fwd;
-        float angle = 0;
-        fwd.set(sin(-angle),cos(-angle), 0);
-        
-        
-        
-        cam.move(-cam.getZAxis()*3);
-        
-    }
-    else if (key == OF_KEY_DOWN) {
-        cam.move(cam.getZAxis()*3);
-        
-    }
-    
-    else if (key == 's') {
-        cam.move(cam.getZAxis()*8);
-        
-    }
-    
-    
-    
-    
-    else if(key == '1'){
-        mysound.load("dumbo american F.mp3");
-        mysound.play();
-    }
-    else if(key == '2'){
-        mysound.load("brooklyn bridge chinese F.mp3");
-        mysound.play();
-    }
-    else if(key == '3'){
-        mysound.load("greenwood american F.mp3");
-        mysound.play();
-    }
-    else if(key == '4'){
-        mysound.load("prospect time chinese voice.mp3");
-        mysound.play();
-    }
-    else if(key == '5'){
-        mysound.load("wailliamsburg.mp3");
-        mysound.play();
-    }
-    else if(key == '6'){
-        mysound.load("subway.mp3");
-        mysound.play();
-    }
-    else if(key == 'b'){
-        ofBackground(0);
-        ofSetColor(255);
-        myfont.drawString("NYC Subway", 50,50);
-        
-    }
-    else if(key == 'w'){
-        ofBackground(255);
-        
-    }
-    
+
 }
 
 //--------------------------------------------------------------
