@@ -5,6 +5,7 @@
 #include "ofxOsc.h"
 #include "Bubble.h"
 #include "ofxSyphon.h"
+#include "ofxGui.h"
 //#include "ofxNetworkUtils.h"
 
 #define R_PORT 2046
@@ -14,6 +15,13 @@ class ofApp : public ofBaseApp{
     
     ofFbo fbo;
     ofxSyphonServer server;
+    
+    ofFbo spotlights;
+    ofxSyphonServer spotServer;
+    
+    ofxPanel gui;
+    ofxVec3Slider spot1;
+    ofxVec3Slider spot2;
 
 	public:
 		void setup();
@@ -50,5 +58,8 @@ class ofApp : public ofBaseApp{
 
 		int ovrState = 0;
 		vector<vector<vector<string>>> ovrMss;
+    
+        int curSpotlight = 0;
+        vector<int> spotStates;
 
 };

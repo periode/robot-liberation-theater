@@ -12,6 +12,7 @@ void ofApp::setup(){
     dialogue6.load("NewDialogue6.mp3");
     dialogue7.load("NewDialogue7.mp3");
     backgroundSound.load("OceanBackground.mp3");
+    fanSound.load("Fan.mp3");
     
     //-------- SYPHON
     tex_water_server.setName("05 - Water");
@@ -26,7 +27,7 @@ void ofApp::setup(){
     //-------- CONSTELLATIONS
     
     gui.setup("variables");
-    gui.add(numberOfStars.setup("numberOfStars", 50, 20, 300));
+    gui.add(numberOfStars.setup("numberOfStars", 70, 20, 400));
     gui.add(starRadius.setup("starRadius", 3, 0.1, 5.1));
     gui.add(speed.setup("speed", 1, 1, 8));
     gui.add(lerp1.setup("lerp1", 1, 0, 1));
@@ -276,7 +277,13 @@ void ofApp::keyPressed(int key){
     }
     
     if(key == 'p'){
+        backgroundSound.setPaused(false);
         backgroundSound.play();
+    }
+    
+    if(key == 'f'){
+        fanSound.setPaused(false);
+        fanSound.play();
     }
     
     if(key == 's'){
@@ -287,6 +294,8 @@ void ofApp::keyPressed(int key){
         dialogue5.setPaused(true);
         dialogue6.setPaused(true);
         dialogue7.setPaused(true);
+        backgroundSound.setPaused(true);
+        fanSound.setPaused(true);
     }
 
 }

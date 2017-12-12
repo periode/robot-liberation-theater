@@ -8,7 +8,8 @@ void ofApp::setup() {
     fbo.allocate(1024, 768, GL_RGBA);
     server.setName("call overflow");
     
-    
+    spotlights.allocate(1024, 768, GL_RGBA);
+    spotServer.setName("spotlight call overflow");
 
 	// set up the OSC receiver to listen for port
 	receiver.setup(R_PORT);
@@ -67,12 +68,35 @@ void ofApp::setup() {
 		"decline_q_1.mp3", // 13 - DECLINE
 		"decline_a_1.mp3"
 	};
+    
+    spotStates = {
+        2,
+        2,
+        1,
+        2,
+        1,
+        2,
+        1,
+        2,
+        1,
+        2,
+        1,
+        2,
+        1,
+        2,
+        1
+    };
 
 	for (int i = 0; i < filenames.size(); ++i) {
 		ofSoundPlayer *player = new ofSoundPlayer();
 		player->load(filenames[i]);
 		clips.push_back(player);
 	}
+    
+    gui.setup("SPOTLIGHTS");
+    gui.add(spot1.setup("Robot Spotlight", ofVec3f(ofGetWidth()*0.5, ofGetHeight()*0.5, 100), ofVec3f(0, 0, 0), ofVec3f(ofGetWidth(), ofGetHeight(), 500)));
+    gui.add(spot2.setup("Phone Spotlight", ofVec3f(ofGetWidth()*0.5, ofGetHeight()*0.5, 100), ofVec3f(0, 0, 0), ofVec3f(ofGetWidth(), ofGetHeight(), 500)));
+    
 
 	ofBackground(255);
 }
@@ -80,6 +104,11 @@ void ofApp::setup() {
 // --------- ### ------- ### ---------
 bool ofApp::gotOscMessage() {
 	bool ret = false;
+    
+    if (!started) {
+        return false;
+    }
+    
 	while (receiver.hasWaitingMessages()) {
 		ofxOscMessage message;
 
@@ -274,7 +303,7 @@ void ofApp::draw() {
 	float w = ofGetWidth();
 	float h = ofGetHeight();
 
-	ofBackground(255);
+	ofBackground(0);
 
 	if (started) {
 		for (Bubble b : messages[0]) {
@@ -290,10 +319,10 @@ void ofApp::draw() {
 
 		ofPushMatrix();
 		ofTranslate(w*0.5, h*0.5);
-		ofScale(0.3, 0.3, 1);
+		ofScale(0.5, 0.5, 1);
 		ofTranslate(-fw, -fh);
 
-		ofSetColor(0);
+		ofSetColor(255);
 
 		font.drawString(siteUrl, 0, 0);
 
@@ -302,9 +331,29 @@ void ofApp::draw() {
 
     fbo.end();
     server.publishTexture(&fbo.getTexture());
+    
+    spotlights.begin();
+    
+    ofBackground(0);
+    ofSetColor(255);
+    
+    ofVec3f s1 = spot1;
+    ofVec3f s2 = spot2;
+    
+    if (curSpotlight == 1) {
+        ofDrawCircle(s1.x, s1.y, s1.z);
+    } else if (curSpotlight == 2) {
+        ofDrawCircle(s2.x, s2.y, s2.z);
+    }
+    
+    gui.draw();
+    
+    spotlights.end();
+    spotServer.publishTexture(&spotlights.getTexture());
 
 	// draw fbo
-    fbo.draw(0, 0);
+    //fbo.draw(0, 0);
+    spotlights.draw(0, 0);
 }
 
 //--------------------------------------------------------------
@@ -331,6 +380,7 @@ void ofApp::keyPressed(int key) {
         }
 		clips[0]->setVolume(0.5);
 		clips[0]->play();
+        curSpotlight = spotStates[0];
 		return;
 	case 'd':
 	case 'D':
@@ -341,6 +391,7 @@ void ofApp::keyPressed(int key) {
             clips[i]->stop();
         }
 		clips[curClip]->play();
+        curSpotlight = spotStates[curClip];
 		++curClip;
 		return;
 	case 'c':
@@ -349,7 +400,8 @@ void ofApp::keyPressed(int key) {
 		return;
 	case ' ':
 		setState(0);
-		started = true;
+        curSpotlight = 0;
+		started = !started;
 		return;
 	case '1':
 	case '2':

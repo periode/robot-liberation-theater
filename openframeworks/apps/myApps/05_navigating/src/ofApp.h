@@ -34,6 +34,7 @@ class ofApp : public ofBaseApp{
     ofSoundPlayer dialogue6;
     ofSoundPlayer dialogue7;
     ofSoundPlayer backgroundSound;
+    ofSoundPlayer fanSound;
     
     
     float terrainZPos;

@@ -11,7 +11,7 @@ Bubble::Bubble(string _msg, int index) {
 
 	msg = _msg;
 	pos = ofVec2f(ofRandom(w), ofRandom(a*h, (a + 1)*h));
-	scale = ofRandom(0.1, 0.5);
+	scale = ofRandom(0.1, 0.3);
 
 	ofLogNotice(ofToString(scale));
 }
@@ -25,7 +25,7 @@ void Bubble::update() {
 }
 
 void Bubble::draw(ofTrueTypeFont* f) {
-	ofSetColor(0);
+	ofSetColor(255);
 	if (!f) {
 		ofDrawBitmapString(msg, pos.x, pos.y);
 	}
