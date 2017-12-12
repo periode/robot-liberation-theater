@@ -24,8 +24,17 @@ class ofApp : public ofBaseApp{
     int terrainW,terrainH;
     int scl;
     
-    ofImage texture;
     ofMesh mesh;
+    
+    ofSoundPlayer dialogue1;
+    ofSoundPlayer dialogue2;
+    ofSoundPlayer dialogue3;
+    ofSoundPlayer dialogue4;
+    ofSoundPlayer dialogue5;
+    ofSoundPlayer dialogue6;
+    ofSoundPlayer dialogue7;
+    ofSoundPlayer backgroundSound;
+    
     
     float terrainZPos;
     float terrainZPosOff;

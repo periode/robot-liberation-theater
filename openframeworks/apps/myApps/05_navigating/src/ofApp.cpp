@@ -4,30 +4,39 @@
 void ofApp::setup(){
     
     
+    dialogue1.load("NewDialogue1.mp3");
+    dialogue2.load("NewDialogue2.mp3");
+    dialogue3.load("NewDialogue3.mp3");
+    dialogue4.load("NewDialogue4.mp3");
+    dialogue5.load("NewDialogue5.mp3");
+    dialogue6.load("NewDialogue6.mp3");
+    dialogue7.load("NewDialogue7.mp3");
+    backgroundSound.load("OceanBackground.mp3");
+    
     //-------- SYPHON
     tex_water_server.setName("05 - Water");
     tex_constellations_server.setName("05 - Constellations");
     
     tex_water.allocate(1024, 768, GL_RGBA);
+    tex_water.begin();
+    ofBackground(0);
+    tex_water.end();
     tex_constellations.allocate(1024, 768, GL_RGBA);
     
     //-------- CONSTELLATIONS
     
     gui.setup("variables");
-    gui.add(numberOfStars.setup("numberOfStars", 50, 20, 500));
+    gui.add(numberOfStars.setup("numberOfStars", 50, 20, 300));
     gui.add(starRadius.setup("starRadius", 3, 0.1, 5.1));
-    gui.add(colorHue.setup("colorHue", 100, 0, 255));
-    gui.add(colorSaturation.setup("colorSaturation", 128, 0, 255));
-    gui.add(colorBrightness.setup("colorBrightness", 0, 0, 255));
     gui.add(speed.setup("speed", 1, 1, 8));
     gui.add(lerp1.setup("lerp1", 1, 0, 1));
     gui.add(lerp2.setup("lerp2", 0, 0, 1));
     gui.add(distanceBetweenStars.setup("distanceBetweenStars", 125, 40, 450));
     gui.add(linesAppearing.setup("linesAppearing", 2000, 100, 10000));
-    gui.add(starColorHue.setup("starColorHue", 255, 0, 255));
-    gui.add(starColorSaturation.setup("starColorSaturation", 255, 0, 255));
-    gui.add(starColorBrightness.setup("starColorBrightness", 255, 0, 255));
-    
+//    gui.add(starColorHue.setup("starColorHue", 255, 0, 255));
+//    gui.add(starColorSaturation.setup("starColorSaturation", 255, 0, 255));
+//    gui.add(starColorBrightness.setup("starColorBrightness", 255, 0, 255));
+//    
     
     for (int i = 0; i < 500; i++) {
         ofVec3f p;
@@ -39,7 +48,6 @@ void ofApp::setup(){
     //-------- WATER
     
     ofDisableArbTex();
-    ofLoadImage(texture,"water_texture.jpg");
     gui.add(time_scale.setup("time_scale", 0.001, 0.1, 1.0));
     gui.add(displacement.setup("displacement", 0.1, 0, 150));
     scl = 25; // Set Scale of grids
@@ -103,7 +111,7 @@ void ofApp::update(){
     
     // ------ CONSTELLATIONS
     
-    backgroundColor.setHsb(colorHue, colorSaturation, colorBrightness);
+    //backgroundColor.setHsb(colorHue, colorSaturation, colorBrightness);
     
     for (int i = 0; i < numberOfStars; i++) {
         
@@ -147,10 +155,10 @@ void ofApp::draw(){
     for (int i = 0; i < numberOfStars; i++) {
         
         //draw star
-        for (float j = 0; j < starRadius; j+=0.05) {
+        for (float j = 0; j < starRadius; j+=0.2) {
             float bright = pow(2-log2(j*0.5)*2, 2);
             float pulsate = ofNoise(ofGetElapsedTimef()*0.3, i)*5;
-            ofSetColor(starColorHue,starColorSaturation,starColorBrightness, bright+pulsate);
+            ofSetColor(255, 255, 255, bright+pulsate);
             
             ofDrawEllipse(positionStars[i], 1+exp(j*1.1), 1+exp(j*1.1));
             
@@ -177,7 +185,7 @@ void ofApp::draw(){
                     ofSetLineWidth(lineWidth);
                     lineWidth = ofRandom(minLineWidth, maxLineWidth);
                     float alpha = ofMap(lineWidth, minLineWidth, maxLineWidth, 120, 3);
-                    ofSetColor(starColorHue,starColorSaturation,starColorBrightness, alpha);
+                    ofSetColor(255, 255, 255, alpha);
                     
                     ofDrawLine(v3, v4);
                     
@@ -207,9 +215,9 @@ void ofApp::draw(){
     ofEnableLighting();
     light.enable();
     
-    texture.bind();
-    mesh.draw();
-    texture.unbind();
+//    texture.bind();
+//    mesh.draw();
+//    texture.unbind();
     
     light.disable();
     ofDisableLighting();
@@ -232,6 +240,54 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    if(key == 'q'){
+        dialogue1.setPaused(false);
+        dialogue1.play();
+    }
+    
+    if(key == 'w'){
+        dialogue2.setPaused(false);
+        dialogue2.play();
+    }
+    
+    if(key == 'e'){
+        dialogue3.setPaused(false);
+        dialogue3.play();
+    }
+    
+    if(key == 'r'){
+        dialogue4.setPaused(false);
+        dialogue4.play();
+    }
+    
+    if(key == 't'){
+        dialogue5.setPaused(false);
+        dialogue5.play();
+    }
+    
+    if(key == 'y'){
+        dialogue6.setPaused(false);
+        dialogue6.play();
+    }
+    
+    if(key == 'u'){
+        dialogue7.setPaused(false);
+        dialogue7.play();
+    }
+    
+    if(key == 'p'){
+        backgroundSound.play();
+    }
+    
+    if(key == 's'){
+        dialogue1.setPaused(true);
+        dialogue2.setPaused(true);
+        dialogue3.setPaused(true);
+        dialogue4.setPaused(true);
+        dialogue5.setPaused(true);
+        dialogue6.setPaused(true);
+        dialogue7.setPaused(true);
+    }
 
 }
 

@@ -2,19 +2,24 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-
-//set tracking
+    tex_map.allocate(800, 605, GL_RGBA);
+    tex_view.allocate(1024, 768, GL_RGBA);
+    
+    tex_server_map.setName("06 - map");
+    tex_server_view.setName("06 - view");
+    
+    //set tracking
     receiver.setup(port_to_listen_to);
     
-//set background
+    //set background
     ofBackground(255);
     
-//set boxes
+    //set boxes
     
     for (int x=0; x<50; x++) {
         for (int y=0; y<50; y++) {
-            ofVec3f cube_pos(ofRandom(0, ofGetWidth()), ofRandom(0, ofGetHeight()));
-                
+            ofVec3f cube_pos(int(ofRandom(0, ofGetWidth()/30))*30, int(ofRandom(0, ofGetHeight()/30))*30);
+            
             cube_positions.push_back(cube_pos);
             
             float cube_sizex=ofRandom(0, 20);
@@ -24,43 +29,63 @@ void ofApp::setup(){
             cube_sizesx.push_back(cube_sizex);
             cube_sizesy.push_back(cube_sizey);
             cube_sizesz.push_back(cube_sizez);
-
-                
+            
+            
             float randomColor=ofRandom(30,240);
-                
+            
             color_bank.push_back(randomColor);
-               
+            
             
         }
     }
     
-
     
-//set camera
+    
+    //set camera
     
     bOrbit = bRoll = false;
-    angleH = roll = 90.f;
+    angleH =90.f;
+    roll = 90.f;
+    
     depth = 1000.f;
+    
+    zaxis.set(0,0,1);
+    
     
     cam.orbit(angleH, 0 , depth);
     cam.roll(roll);
-    cam.setGlobalPosition(0,0,0);
+    cam_rotation = 270.f;
+    cam.rotate(cam_rotation,zaxis);
+    
+    cam.setGlobalPosition(100,0,5);
+    //    cam.setGlobalPosition(ofGetWindowWidth()/2,ofGetWindowHeight()/2,500);
+    //
     
     
-   
     
-//mapping
+    //mapping
     manual=false;
     
-    radiusrange=100;
-    landmark1.set(189,180);
-    landmark2.set(250,260);
-    landmark3.set(359,356);
-    landmark4.set(400,300);
-    landmark5.set(310,250);
-    landmark6.set(430,200);
+    sites.load("Map-Pin.png");
     
-//front
+    subway.load("subway.png");
+    
+    
+    sites.setAnchorPoint(sites.getWidth()/2, sites.getHeight()/2);
+    subway.setAnchorPoint(sites.getWidth()/2, sites.getHeight()/2);
+    
+    
+    
+    
+    landmark1.set(100,200);
+    landmark2.set(100,400);
+    landmark3.set(300,400);
+    landmark4.set(300,100);
+    landmark5.set(500,100);
+    landmark6.set(500,400);
+    
+    
+    //front
     myfont.loadFont("Arial Black.ttf", 64);
 
     
@@ -68,42 +93,43 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-////tracking
+    ////tracking
     if(receiver.hasWaitingMessages()){
         ofxOscMessage msg;
         receiver.getNextMessage(&msg);
         
-
+        
         if ( msg.getAddress() == "/position/front") {
             front.x = (msg.getArgAsFloat( 0 ));
             front.y = (msg.getArgAsFloat( 1 ));
             
-           
+            
         }
-
+        
         if ( msg.getAddress() == "/position/back" ) {
             back.x = (msg.getArgAsFloat( 0 ));
             back.y = (msg.getArgAsFloat( 1 ));
         }
-
-    }
-   
-    
-    if (manual==false){
-
-        position.interpolate(front, 0.5);
         
-        direction.set(front.x-back.x,front.y-back.y,0);
-        
-        cam.setGlobalPosition(position[0],position[1],0);
-        
-//        cam.setOrientation(direction);
-        
-        ofLog()<<ofToString(cam.getGlobalPosition());
-
-
     }
     
+    
+    //     if (manual==false){
+    
+    //         position.interpolate(front, 0.1);
+    
+    //         direction.set(front.x-back.x,front.y-back.y,0);
+    
+    //         cam.setGlobalPosition(position[0],position[1],0);
+    
+    // //        cam.setOrientation(direction);
+    
+    // //        ofLog()<<ofToString(cam.getGlobalPosition());
+    
+    
+    //     }
+    
+    ofLog()<<ofToString(cam.getGlobalPosition());
 
 
 }
@@ -111,73 +137,143 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
+    tex_view.begin();
+    ofClear(255,255,255, 0);
     cam.begin();
-  
     
-
+    ofSetColor(100,100,100);
+    ofPushMatrix();
+    ofRotate(90, 0, 1, 0);
+    ofDrawGridPlane(2,10000,false);
+    ofPopMatrix();
+    
+    
     for(int i = 0; i < cube_positions.size(); i++){
         ofSetColor(color_bank[i],95);
         box.set(cube_sizesx[i],cube_sizesy[i],cube_sizesz[i]);
-        box.setPosition(cube_positions[i]);
+        box.setPosition(cube_positions[i].x, cube_positions[i].y, cube_positions[i].z+cube_sizesz[i]/2);
         box.draw();
-//        ofDrawBox(cube_positions[i], 10);
     }
     
-    ofSetColor(255, 0, 0);
-    ofDrawCircle(position, 10);
-    ofDrawSphere(landmark1.x,landmark1.y, 10);
-    ofDrawSphere(landmark2.x,landmark2.y, 10);
-    ofDrawSphere(landmark3.x,landmark3.y, 10);
-    ofDrawSphere(landmark4.x,landmark4.y, 10);
-    ofDrawSphere(landmark5.x,landmark5.y, 10);
-    ofDrawSphere(landmark6.x,landmark6.y, 10);
+    ofPushMatrix();
     
-
+    ofSetColor(255);
     
     
-
+    ofPushMatrix();
+    ofTranslate(landmark1.x,landmark1.y, 0);
+    ofRotate(90, 1, 0, 0);
+    sites.draw(0,0,0);
+    ofPopMatrix();
+    
+    
+    ofPushMatrix();
+    ofTranslate(landmark1.x,landmark1.y, 0);
+    ofRotate(90, 1, 0, 0);
+    sites.draw(0,0,0);
+    ofPopMatrix();
+    
+    ofPushMatrix();
+    ofTranslate(landmark2.x,landmark2.y, 0);
+    ofRotate(90, 1, 0, 0);
+    sites.draw(0,0,0);
+    ofPopMatrix();
+    
+    ofPushMatrix();
+    ofTranslate(landmark3.x,landmark3.y, 0);
+    ofRotate(90, 1, 0, 0);
+    ofRotate(90, 0, 1, 0);
+    sites.draw(0,0,0);
+    ofPopMatrix();
+    
+    ofPushMatrix();
+    ofTranslate(landmark4.x,landmark4.y, 0);
+    ofRotate(90, 1, 0, 0);
+    sites.draw(0,0,0);
+    ofPopMatrix();
+    
+    ofPushMatrix();
+    ofTranslate(landmark5.x,landmark5.y, 0);
+    ofRotate(90, 1, 0, 0);
+    ofRotate(90, 0, 1, 0);
+    sites.draw(0,0,0);
+    ofPopMatrix();
+    
+    ofPushMatrix();
+    ofTranslate(landmark6.x,landmark6.y, 0);
+    ofRotate(90, 1, 0, 0);
+    subway.draw(0,0,0);
+    ofPopMatrix();
+    
+    //    ofDrawIcoSphere(landmark1.x,landmark1.y, 10);
+    //    ofDrawIcoSphere(landmark2.x,landmark2.y, 10);
+    //    ofDrawIcoSphere(landmark3.x,landmark3.y, 10);
+    //    ofDrawIcoSphere(landmark4.x,landmark4.y, 10);
+    //    ofDrawIcoSphere(landmark5.x,landmark5.y, 10);
+    //    ofDrawIcoSphere(landmark6.x,landmark6.y, 10);
+    //
+    
+    
+    
+    
+    
     
     cam.end();
     
-   
     
-
-   
     
-
+    
+    tex_view.end();
+    tex_server_view.publishTexture(&tex_view.getTexture());
+    
+    tex_view.draw(0, 0);
+    
+    tex_map.begin();
+    map.draw(0, 0);
+    tex_map.end();
+    tex_server_map.publishTexture(&tex_map.getTexture());
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if (key == 'm') {
-        manual=true;
+        manual=!manual;
     }
     if (key == 'a') {
         manual=false;
     }
     if (key == OF_KEY_LEFT) {
-        cam.move(0,-5,0);
+        cam.rotate(5.f, zaxis);
+        
     }
     else if (key == OF_KEY_RIGHT) {
-        cam.move(0,5,0);
+        cam.rotate(-5.f, zaxis);
+        
     }
     else if (key == OF_KEY_UP) {
-        cam.move(-5,0,0);
+        //find the forward vector
+        ofVec3f fwd;
+        float angle = 0;
+        fwd.set(sin(-angle),cos(-angle), 0);
+        
+        
+        
+        cam.move(-cam.getZAxis()*3);
         
     }
     else if (key == OF_KEY_DOWN) {
-        cam.move(5,0,0);
+        cam.move(cam.getZAxis()*3);
         
     }
     
-    else if (key == 'r') {
-        cam.pan(10);
+    else if (key == 's') {
+        cam.move(cam.getZAxis()*8);
         
     }
-    else if (key == 'l') {
-        cam.pan(-10);
-        
-    }
+    
+    
+    
+    
     else if(key == '1'){
         mysound.load("dumbo american F.mp3");
         mysound.play();
@@ -205,14 +301,14 @@ void ofApp::keyPressed(int key){
     else if(key == 'b'){
         ofBackground(0);
         ofSetColor(255);
-        myfont.drawString("NYC Subway", 1000,1000);
+        myfont.drawString("NYC Subway", 50,50);
         
     }
     else if(key == 'w'){
         ofBackground(255);
-       
+        
     }
-   
+    
 }
 
 //--------------------------------------------------------------

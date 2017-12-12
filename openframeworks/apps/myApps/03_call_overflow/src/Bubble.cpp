@@ -34,8 +34,9 @@ void Bubble::draw(ofTrueTypeFont* f) {
 		float h = f->stringHeight(msg)*0.5;
 
 		ofPushMatrix();
-		ofTranslate(pos.x - w, pos.y);// -h);
+		ofTranslate(pos.x, pos.y);// -h);
 		ofScale(scale, scale, 1);
+		ofTranslate(-w, -h);
 
 		f->drawString(msg, 0, 0);
 		ofPopMatrix();

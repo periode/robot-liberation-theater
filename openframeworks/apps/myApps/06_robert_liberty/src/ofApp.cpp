@@ -3,19 +3,22 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-//------------SYPHON
-    tex_view_server.setName("06_view");
-    tex_map_server.setName("06_map");
+//    ofEnableDepthTest();
     
-    tex_view_server.allocate(1024, 768, GL_RGBA);
-    tex_map_server.allocate(1024, 768, GL_RGBA);
+//------------SYPHON
+    tex_server_view.setName("06_view");
+    tex_server_map.setName("06_map");
+    
+    tex_view.allocate(1024, 768, GL_RGBA);
+    tex_map.allocate(800, 605, GL_RGBA);
 
 //-------VIEW
 //set tracking
     receiver.setup(port_to_listen_to);
     
 //set background
-    ofBackground(255);
+    backgroundc=255;
+    ofBackground(backgroundc);
     
 //set boxes
     
@@ -71,21 +74,22 @@ void ofApp::setup(){
     
     sites.load("Map-Pin.png");
     
+    
     subway.load("subway.png");
     
     
-    sites.setAnchorPoint(sites.getWidth()/2, sites.getHeight()/2);
+    sites.setAnchorPoint(sites.getWidth()/2, 0);
     subway.setAnchorPoint(sites.getWidth()/2, sites.getHeight()/2);
     
   
     
    
-    landmark1.set(100,200);
-    landmark2.set(100,400);
-    landmark3.set(300,400);
-    landmark4.set(300,100);
-    landmark5.set(500,100);
-    landmark6.set(500,400);
+    landmark1.set(105,200);
+    landmark2.set(105,350);
+    landmark3.set(230,350);
+    landmark4.set(230,195);
+    landmark5.set(410,195);
+    landmark6.set(410,300);
 
     
 //front
@@ -101,6 +105,10 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
+    ofBackground(backgroundc);
+
+    
 ////tracking
     if(receiver.hasWaitingMessages()){
         ofxOscMessage msg;
@@ -143,9 +151,13 @@ ofLog()<<ofToString(cam.getGlobalPosition());
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    
+    
     //--------MAP
     tex_view.begin();
+  
     ofClear(255,255,255, 0);
+    ofBackground(backgroundc);
     cam.begin();
   
     ofSetColor(100,100,100);
@@ -154,7 +166,7 @@ void ofApp::draw(){
     ofDrawGridPlane(2,10000,false);
     ofPopMatrix();
 
-
+    ofEnableDepthTest();
      for(int i = 0; i < cube_positions.size(); i++){
         ofSetColor(color_bank[i],95);
         box.set(cube_sizesx[i],cube_sizesy[i],cube_sizesz[i]);
@@ -168,48 +180,44 @@ void ofApp::draw(){
     
 
     ofPushMatrix();
-    ofTranslate(landmark1.x,landmark1.y, 0);
-    ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
-    ofPopMatrix();
-   
+
 
     ofPushMatrix();
     ofTranslate(landmark1.x,landmark1.y, 0);
     ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
+    sites.draw(0,0,30);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark2.x,landmark2.y, 0);
     ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
+    sites.draw(0,0,30);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark3.x,landmark3.y, 0);
     ofRotate(90, 1, 0, 0);
     ofRotate(90, 0, 1, 0);
-    sites.draw(0,0,0);
+    sites.draw(0,0,30);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark4.x,landmark4.y, 0);
     ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,0);
+    sites.draw(0,0,30);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark5.x,landmark5.y, 0);
     ofRotate(90, 1, 0, 0);
     ofRotate(90, 0, 1, 0);
-    sites.draw(0,0,0);
+    sites.draw(0,0,30);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark6.x,landmark6.y, 0);
     ofRotate(90, 1, 0, 0);
-    subway.draw(0,0,0);
+    subway.draw(0,0,30);
     ofPopMatrix();
    
 //    ofDrawIcoSphere(landmark1.x,landmark1.y, 10);
@@ -222,9 +230,10 @@ void ofApp::draw(){
     
  
     cam.end();
-   
+    
+    ofDisableDepthTest();
     tex_view.end();
-    tex_view_server.publishTexture(tex_view.getTexture());
+    tex_server_view.publishTexture(&tex_view.getTexture());
     tex_view.draw(0, 0);
     
     
@@ -234,10 +243,11 @@ void ofApp::draw(){
     
     //--------MAP
     tex_map.begin();
-    map.draw();
+    map.draw(0, 0);
     tex_map.end();
-    tex_map_server.publishTexture(tex_map.getTexture());
-    tex_map.draw(0, 0);
+    tex_server_map.publishTexture(&tex_map.getTexture());
+    //tex_map.draw(0, 0);
+    
     
 
 }
@@ -266,11 +276,11 @@ void ofApp::keyPressed(int key){
         
        
         
-        cam.move(-cam.getZAxis()*3);
+        cam.move(-cam.getZAxis()*5);
         
     }
     else if (key == OF_KEY_DOWN) {
-        cam.move(cam.getZAxis()*3);
+        cam.move(cam.getZAxis()*5);
         
     }
     
@@ -307,13 +317,11 @@ void ofApp::keyPressed(int key){
         mysound.play();
     }
     else if(key == 'b'){
-        ofBackground(0);
-        ofSetColor(255);
-        myfont.drawString("NYC Subway", 50,50);
+        backgroundc=0;
         
     }
     else if(key == 'w'){
-        ofBackground(255);
+        backgroundc=255;
        
     }
    

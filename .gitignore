@@ -1,6 +1,6 @@
 .DS_Store
+00_rhyming/video/*
 openframeworks/libs/openFrameworksCompiled/lib/osx/openFrameworksDebug.a
-**/bin/
 [Oo]bj/
 *.o
 **/*.app
@@ -9,7 +9,3 @@ openframeworks/libs/openFrameworksCompiled/lib/osx/openFrameworksDebug.a
 .vs
 *.sln
 venv*
-openframeworks/libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj/xcuserdata/luizerieksta.xcuserdatad/xcschemes/xcschememanagement.plist
-openframeworks/apps/myApps/05_navigating/05_navigating.xcodeproj/xcuserdata/luizerieksta.xcuserdatad/xcschemes/xcschememanagement.plist
-openframeworks/apps/myApps/05_navigating/05_navigating.xcodeproj/project.xcworkspace/xcuserdata/luizerieksta.xcuserdatad/UserInterfaceState.xcuserstate
-openframeworks/libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj/xcuserdata/luizerieksta.xcuserdatad/xcschemes/openFrameworks.xcscheme
