@@ -53,6 +53,7 @@ class ofApp : public ofBaseApp{
 		vector<vector<Bubble>> messages;
 
 		bool started = false;
+        bool done = false;
 
 		string siteUrl = "http://nyuad.im/call-overflow";
 

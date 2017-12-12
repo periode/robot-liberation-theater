@@ -41,5 +41,9 @@ class ofApp : public ofBaseApp{
     
         bool isReact = false;
     
-        bool isBitReact = false;
+        bool isRedReact = false;
+        bool isBlueReact = false;
+        bool isGreenReact = false;
+        bool isGrayReact = false;
+
 };

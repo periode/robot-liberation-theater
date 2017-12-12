@@ -94,8 +94,8 @@ void ofApp::setup() {
 	}
     
     gui.setup("SPOTLIGHTS");
-    gui.add(spot1.setup("Robot Spotlight", ofVec3f(ofGetWidth()*0.5, ofGetHeight()*0.5, 100), ofVec3f(0, 0, 0), ofVec3f(ofGetWidth(), ofGetHeight(), 500)));
-    gui.add(spot2.setup("Phone Spotlight", ofVec3f(ofGetWidth()*0.5, ofGetHeight()*0.5, 100), ofVec3f(0, 0, 0), ofVec3f(ofGetWidth(), ofGetHeight(), 500)));
+    gui.add(spot1.setup("Robot Spotlight", ofVec3f(428.4, 482, 181.1), ofVec3f(0, 0, 0), ofVec3f(ofGetWidth(), ofGetHeight(), 500)));
+    gui.add(spot2.setup("Phone Spotlight", ofVec3f(569.5, 540.7, 40.8), ofVec3f(0, 0, 0), ofVec3f(ofGetWidth(), ofGetHeight(), 500)));
     
 
 	ofBackground(255);
@@ -305,7 +305,7 @@ void ofApp::draw() {
 
 	ofBackground(0);
 
-	if (started) {
+	if (started && !done) {
 		for (Bubble b : messages[0]) {
 			b.draw(&font);
 		}
@@ -313,7 +313,7 @@ void ofApp::draw() {
 			b.draw(&font);
 		}
 	}
-	else {
+	else if (!done) {
 		float fw = font.stringWidth(siteUrl)*0.5;
 		float fh = font.stringHeight(siteUrl)*0.5;
 
@@ -346,7 +346,7 @@ void ofApp::draw() {
         ofDrawCircle(s2.x, s2.y, s2.z);
     }
     
-    gui.draw();
+    //gui.draw();
     
     spotlights.end();
     spotServer.publishTexture(&spotlights.getTexture());
@@ -396,8 +396,10 @@ void ofApp::keyPressed(int key) {
 		return;
 	case 'c':
 	case 'C':
-		setState(ovrState + 1);
-		return;
+        setState(0);
+        curSpotlight = 0;
+        done = true;
+        return;
 	case ' ':
 		setState(0);
         curSpotlight = 0;

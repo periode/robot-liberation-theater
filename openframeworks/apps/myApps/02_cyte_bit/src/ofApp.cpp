@@ -19,9 +19,7 @@ void ofApp::setup(){
     Beat.setLoop(false);
     other.setLoop(false);
     Beat.setVolume(.5);
-    
-    //Beat.play();
-}
+    }
 
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -33,6 +31,12 @@ void ofApp::update(){
             if (fftSmooth[i] < value[i]) {
                 fftSmooth[i] = value[i];
             }
+        }
+    }else{
+        ofSoundUpdate();
+        float * value = ofSoundGetSpectrum(bands);
+        for (int i = 0; i<bands; i++) {
+            fftSmooth[i] *= 0.0f;
         }
     }
 }
@@ -105,7 +109,7 @@ void ofApp::draw(){
     
     
 	ofBackground(0);
-    if(isBitReact == true){
+    if(isRedReact == true){
         int newR = ofRandom(255);
         int newG = ofRandom(0);
         int newB = ofRandom(0);
@@ -121,10 +125,10 @@ void ofApp::draw(){
         ofSetColor(255);
         ofDrawRectangle(360, 210, 80, 80);
     }
-    if(isBitReact == true){
+    if(isBlueReact == true){
         int newR = ofRandom(0);
-        int newG = ofRandom(255);
-        int newB = ofRandom(0);
+        int newG = ofRandom(0);
+        int newB = ofRandom(255);
         
         ofSetColor(newR, newG, newB);
         ofDrawRectangle(500, 600, 100, 100);
@@ -137,10 +141,10 @@ void ofApp::draw(){
         ofSetColor(255);
         ofDrawRectangle(510, 610, 80, 80);
     }
-    if(isBitReact == true){
+    if(isGreenReact == true){
         int newR = ofRandom(0);
-        int newG = ofRandom(0);
-        int newB = ofRandom(255);
+        int newG = ofRandom(255);
+        int newB = ofRandom(0);
         
         ofSetColor(newR, newG, newB);
         ofDrawRectangle(750, 100, 100, 100);
@@ -153,10 +157,10 @@ void ofApp::draw(){
         ofSetColor(255);
         ofDrawRectangle(760, 110, 80, 80);
     }
-    if(isBitReact == true){
-        int newR = ofRandom(255);
-        int newG = ofRandom(255);
-        int newB = ofRandom(255);
+    if(isGrayReact == true){
+        int newR = ofRandom(100);
+        int newG = ofRandom(100);
+        int newB = ofRandom(100);
         
         ofSetColor(newR, newG, newB);
         ofDrawRectangle(870, 600, 100, 100);
@@ -169,32 +173,13 @@ void ofApp::draw(){
         ofSetColor(255);
         ofDrawRectangle(880, 610, 80, 80);
     }
-//	ofSetColor(150, 0, 0);
-//	ofDrawRectangle(350,200,100,100);
-//	ofSetColor(255);
-//	ofDrawRectangle(360, 210, 80, 80);
-//
-//	ofSetColor(0, 0, 150);
-//	ofDrawRectangle(500, 600, 100, 100);
-//	ofSetColor(255);
-//	ofDrawRectangle(510, 610, 80, 80);
-//
-//	ofSetColor(0, 150, 0);
-//	ofDrawRectangle(750, 100, 100, 100);
-//	ofSetColor(255);
-//	ofDrawRectangle(760, 110, 80, 80);
-//
-//	ofSetColor(100);
-//	ofDrawRectangle(870, 600, 100, 100);
-//	ofSetColor(255);
-//	ofDrawRectangle(880, 610, 80, 80);
     
     
     fbo_dock.end();
     
     syphon_server_dock.publishTexture(&fbo_dock.getTexture());
     
-    fbo_dock.draw(0, 0);
+    //fbo_dock.draw(0, 0);
 }
 
 //--------------------------------------------------------------
@@ -217,16 +202,23 @@ void ofApp::keyPressed(int key){
             other.setPaused(false);
             break;
         case 's':
-            isReact = true;
-            break;
-        case 'a':
-            isReact = false;
-            break;
-        case 'x':
-            isBitReact = true;
+            isReact = !isReact;
             break;
         case 'z':
-            isBitReact = false;
+            isRedReact = !isRedReact;
+            isReact = !isReact;
+            break;
+        case 'x':
+            isBlueReact = !isBlueReact;
+            isReact = !isReact;
+            break;
+        case 'c':
+            isGreenReact = !isGreenReact;
+            isReact = !isReact;
+            break;
+        case 'v':
+            isGrayReact = !isGrayReact;
+            isReact = !isReact;
             break;
     }
 }
