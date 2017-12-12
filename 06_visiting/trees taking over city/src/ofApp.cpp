@@ -13,7 +13,7 @@ void ofApp::setup(){
     
     //set background
     ofBackground(255);
-    
+    //--------
     //set boxes
     
     for (int x=0; x<50; x++) {
