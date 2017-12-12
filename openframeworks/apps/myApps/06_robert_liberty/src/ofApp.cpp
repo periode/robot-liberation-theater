@@ -63,7 +63,7 @@ void ofApp::setup(){
     cam_rotation = 270.f;
     cam.rotate(cam_rotation,zaxis);
     
-    cam.setGlobalPosition(100,0,5);
+    cam.setGlobalPosition(105,0,5);
 //    cam.setGlobalPosition(ofGetWindowWidth()/2,ofGetWindowHeight()/2,500);
 //
     
@@ -90,8 +90,8 @@ void ofApp::setup(){
     landmark2.set(105,350);
     landmark3.set(230,350);
     landmark4.set(230,195);
-    landmark5.set(410,195);
-    landmark6.set(410,300);
+    landmark5.set(395,195);
+    landmark6.set(395,500);
 
     
 //front
@@ -187,39 +187,39 @@ void ofApp::draw(){
     ofPushMatrix();
     ofTranslate(landmark1.x,landmark1.y, 0);
     ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,30);
+    sites.draw(0,0,0);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark2.x,landmark2.y, 0);
     ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,30);
+    sites.draw(0,0,0);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark3.x,landmark3.y, 0);
     ofRotate(90, 1, 0, 0);
     ofRotate(90, 0, 1, 0);
-    sites.draw(0,0,30);
+    sites.draw(0,0,0);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark4.x,landmark4.y, 0);
     ofRotate(90, 1, 0, 0);
-    sites.draw(0,0,30);
+    sites.draw(0,0,0);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark5.x,landmark5.y, 0);
     ofRotate(90, 1, 0, 0);
     ofRotate(90, 0, 1, 0);
-    sites.draw(0,0,30);
+    sites.draw(0,0,0);
     ofPopMatrix();
     
     ofPushMatrix();
     ofTranslate(landmark6.x,landmark6.y, 0);
     ofRotate(90, 1, 0, 0);
-    subway.draw(0,0,30);
+    subway.draw(0,0,0);
     ofPopMatrix();
    
 //    ofDrawIcoSphere(landmark1.x,landmark1.y, 10);
@@ -278,11 +278,11 @@ void ofApp::keyPressed(int key){
         
        
         
-        cam.move(-cam.getZAxis()*5);
+        cam.move(-cam.getZAxis()*4);
         
     }
     else if (key == OF_KEY_DOWN) {
-        cam.move(cam.getZAxis()*5);
+        cam.move(cam.getZAxis()*4);
         
     }
     
