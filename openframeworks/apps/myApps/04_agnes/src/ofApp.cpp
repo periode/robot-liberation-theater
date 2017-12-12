@@ -1,212 +1,301 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
-Params param;
+Params param; //initiate parameters class
 
 void Params::setup() {
-	eCenter = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2);
-	eRad = 5;
-	velRad = 10;
-	lifeTime = 0.5;
-	rotate = 90;
+    
+    //initial particle setup (location, distance, reach, lifetime, and  rotation)
+    center = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2);
+    distance = 5;
+    velocity = 10;
+    lifetime = 1;
+    rotate = 90;
+    
+    //initial colors of particle
+    blue = true;
+    yellow = true;
+    
 }
 
 //--------------------------------------------------------------
 Particle::Particle() {
-	live = false;
+    
+    //particle starts out dead
+    live = false;
+    
 }
 
 //--------------------------------------------------------------
-ofPoint randomPointInCircle(float maxRad) {
-	ofPoint pnt;
-	float rad = ofRandom(0, maxRad);
-	float angle = ofRandom(0, M_TWO_PI);
-	pnt.x = cos(angle) * rad;
-	pnt.y = sin(angle) * rad;
-	return pnt;
+ofPoint randomPoint(float maxRad) {
+    
+    //points are chosen at random at the beginning, according to the distance variable
+    ofPoint pnt;
+    float rad = ofRandom(0, maxRad);
+    float angle = ofRandom(0, TWO_PI);
+    pnt.x = cos(angle) * rad;
+    pnt.y = sin(angle) * rad;
+    return pnt;
+    
 }
 
 //--------------------------------------------------------------
 void Particle::setup() {
-	pos = param.eCenter + randomPointInCircle(param.eRad);
-	vel = randomPointInCircle(param.velRad);
-	time = 0;
-	lifeTime = param.lifeTime;
-	live = true;
+    
+    //the position and velocity of the particle are defined according to the parameter variables
+    pos = param.center + randomPoint(param.distance);
+    vel = randomPoint(param.velocity);
+    time = 0;
+    lifetime = param.lifetime;
+    
+    //the status of the particle is changed to alive
+    live = true;
+    
 }
 
 //--------------------------------------------------------------
 void Particle::update(float dt) {
-	if (live) {
-		vel.rotate(0, 0, param.rotate * dt);
-		pos += vel * dt;
-		time += dt;
-		if (time >= lifeTime) {
-			live = false;
-		}
-	}
+    
+    //if the particle is alive, rotate it, then change its live status
+    if (live) {
+        vel.rotate(0, 0, param.rotate * dt);
+        pos += vel * dt;
+        time += dt;
+        if (time >= lifetime) {
+            live = false;
+        }
+    }
+    
 }
 
 //--------------------------------------------------------------
-void Particle::draw() {
-	if (live) {
-		float size = ofMap(fabs(time - lifeTime / 2), 0, lifeTime / 2, 3, 1);
-		ofSetColor(ofColor(0, 0, ofRandom(128, 255)));
-		ofCircle(pos, size);
-	}
+void Particle::drawBlue() {
+    
+    //if particle is alive, map the size of the particle using formula
+    if (live) {
+        float size = ofMap(fabs(time - lifetime / 2), 0, lifetime / 2, 3, 1);
+        
+        //color is blue
+        if (param.blue) {
+            ofSetColor(ofColor(0, 0, ofRandom(128, 255)));
+        }
+        //color is red
+        else {
+            ofSetColor(ofColor(ofRandom(150, 220), 30, 30));
+        }
+        
+        //draw the particle as a circle
+        ofDrawCircle(pos, size);
+    }
+    
 }
 
 //--------------------------------------------------------------
-//----------------------  testApp  -----------------------------
+void Particle::drawYellow() { //yellow particle
+    
+    //if the color is set to yellow
+    if (param.yellow) {
+        
+        //map the size of the particle using formula
+        float size = ofMap(fabs(time - lifetime / 2), 0, lifetime / 2, 3, 1);
+        
+        //set color to yellow
+        ofSetColor(ofColor(170, ofRandom(150,255), 50));
+        
+        //draw particle as a circle
+        ofDrawCircle(pos, size);
+    }
+    
+}
+
 //--------------------------------------------------------------
 void ofApp::setup() {
-	ofSetFrameRate(60);
     
+    //name server agnes
     server.setName("agnes");
-
-	int w = ofGetWidth();
-	int h = ofGetHeight();
-	fbo.allocate(1024, 768, GL_RGB32F_ARB);
-
-	fbo.begin();
-	ofBackground(255, 255, 255);
-	fbo.end();
-
-	param.setup();
-	history = 0.995;
-	bornRate = 10;
-
-	bornCount = 0;
-	time0 = ofGetElapsedTimef();
+    
+    //load sound and play
+    sound.load("agnes_george_soundtrack.mp3");
+    sound.play(); //Plays sound
+    
+    //set framerate
+    ofSetFrameRate(60);
+    
+    //window size is 1024 by 768
+    fbo.allocate(1024, 768, GL_RGB32F_ARB);
+    
+    fbo.begin();
+    ofBackground(0);
+    fbo.end();
+    
+    //initiate initial particle setup
+    param.setup();
+    
+    //history will modify the alpha of the background
+    history = 0.995;
+    
+    //how many particles will appear in the initial screen
+    bornRate = 10;
+    bornCount = 0;
+    time0 = ofGetElapsedTimef();
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	float time = ofGetElapsedTimef();
-	float dt = ofClamp(time - time0, 0, 0.1);
-	time0 = time;
-
-	int i = 0;
-	while (i > p.size()) {
-		if (!p[i].live) {
-			p.erase(p.begin() + i);
-		}
-		else {
-			i--;
-		}
-	}
-
-	bornCount += dt * bornRate;
-	if (bornCount >= 1) {
-		int bornN = int(bornCount);
-		bornCount -= bornN;
-		for (int i = 0; i<bornN; i++) {
-			Particle newP;
-			newP.setup();
-			p.push_back(newP);
-		}
-	}
-
-	for (int i = 0; i<p.size(); i++) {
-		p[i].update(dt);
-	}
+    
+    //get time to determine life of particle
+    float time = ofGetElapsedTimef();
+    float dt = time - time0;
+    time0 = time;
+    
+    //setup blue/red particles by adding them to array
+    bornCount += dt * bornRate;
+    if (bornCount >= 1) {
+        int bornN = int(bornCount);
+        bornCount -= bornN;
+        for (int i = 0; i<bornN; i++) {
+            Particle newP;
+            newP.setup();
+            p.push_back(newP);
+        }
+    }
+    
+    //update blue/red particles in p vector array
+    for (int i = 0; i<p.size(); i++) {
+        p[i].update(dt);
+    }
+    
+    //setup yellow particle
+    if (!y.live) {
+        y.setup();
+    }
+    
+    //update yellow particle
+    y.update(dt);
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	ofBackground(255, 255, 255);
-
-	fbo.begin();
-
-	ofEnableAlphaBlending();
-
-	float alpha = (1 - history) * 255;
-	ofSetColor(0, 0, 0, alpha);
-	ofFill();
-	ofRect(0, 0, ofGetWidth(), ofGetHeight());
-
-	ofDisableAlphaBlending();
-
-	ofFill();
-	for (int i = 0; i<p.size(); i++) {
-		p[i].draw();
-	}
-
-	fbo.end();
-
+    
+    //initiate draw
+    fbo.begin();
+    
+    //setup fade using alpha
+    float alpha = (1 - history) * 255;
+    ofSetColor(0, 0, 0, alpha);
+    ofFill();
+    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    
+    //draw blue/red particles
+    ofFill();
+    for (int i = 0; i<p.size(); i++) {
+        p[i].drawBlue();
+    }
+    
+    //draw yellow particle
+    y.drawYellow();
+    
+    fbo.end();
+    
+    //publish syphon server
     server.publishTexture(&fbo.getTexture());
     
-	ofSetColor(255, 255, 255);
-	fbo.draw(0, 0);
+    //draw fbo
+    fbo.draw(0, 0);
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	if (key == '1') {
-		param.eRad = 25;
-		param.velRad = 50;
-	}
-	if (key == '2') {
-		param.eRad = 100;
-		param.velRad = 200;
-		bornRate = 100;
-	}
-	if (key == '3') {
-		param.eRad = 200;
-		param.velRad = 300;
-		bornRate = 400;
-	}
-	if (key == '4') {
-		param.eRad = 400;
-		param.velRad = 600;
-		bornRate = 800;
-	}
-	if (key == '5') {
-		param.eRad = 1000;
-		param.velRad = 400;
-		bornRate = 1000;
-	}
-	if (key == '6') {
-		bornRate = 0;
-	}
+    
+    //center distance
+    if (key == '1') {
+        param.distance += 0.2;
+    }
+    
+    if (key == 'q') {
+        param.distance -= 0.2;
+    }
+    
+    //reach of particle
+    if (key == '2') {
+        param.velocity += 0.2;
+    }
+    
+    if (key == 'w') {
+        param.velocity += 0.2;
+    }
+    
+    //amount of particles
+    if (key == '3') {
+        bornRate += 0.2;
+    }
+    
+    if (key == 'e') {
+        bornRate += 0.2;
+    }
+    
+    //make particles stop blue/red and yellow
+    if (key == '4') {
+        bornRate = 0;
+        param.yellow = false;
+    }
+    
+    //test option
+    if (key == 't') {
+        param.distance = 100;
+        param.velocity = 200;
+        bornRate = 100;
+    }
+    
+    //color change between blue and red
+    if (key == 'b') {
+        param.blue = true;
+    }
+    if (key == 'r') {
+        param.blue = false;
+    }
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {
-
+    
 }
