@@ -40,4 +40,6 @@ class ofApp : public ofBaseApp{
         ofSoundPlayer other;
     
         bool isReact = false;
+    
+        bool isBitReact = false;
 };

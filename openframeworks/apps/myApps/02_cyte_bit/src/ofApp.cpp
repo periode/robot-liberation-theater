@@ -105,32 +105,96 @@ void ofApp::draw(){
     
     
 	ofBackground(0);
-	ofSetColor(150, 0, 0);
-	ofDrawRectangle(350,200,100,100);
-	ofSetColor(255);
-	ofDrawRectangle(360, 210, 80, 80);
-
-	ofSetColor(0, 0, 150);
-	ofDrawRectangle(500, 600, 100, 100);
-	ofSetColor(255);
-	ofDrawRectangle(510, 610, 80, 80);
-
-	ofSetColor(0, 150, 0);
-	ofDrawRectangle(750, 100, 100, 100);
-	ofSetColor(255);
-	ofDrawRectangle(760, 110, 80, 80);
-
-	ofSetColor(100);
-	ofDrawRectangle(870, 600, 100, 100);
-	ofSetColor(255);
-	ofDrawRectangle(880, 610, 80, 80);
+    if(isBitReact == true){
+        int newR = ofRandom(255);
+        int newG = ofRandom(0);
+        int newB = ofRandom(0);
+        
+        ofSetColor(newR, newG, newB);
+        ofDrawRectangle(350,200,100,100);
+        ofSetColor(255);
+        ofDrawRectangle(360, 210, 80, 80);
+        
+    }else{
+        ofSetColor(150, 0, 0);
+        ofDrawRectangle(350,200,100,100);
+        ofSetColor(255);
+        ofDrawRectangle(360, 210, 80, 80);
+    }
+    if(isBitReact == true){
+        int newR = ofRandom(0);
+        int newG = ofRandom(255);
+        int newB = ofRandom(0);
+        
+        ofSetColor(newR, newG, newB);
+        ofDrawRectangle(500, 600, 100, 100);
+        ofSetColor(255);
+        ofDrawRectangle(510, 610, 80, 80);
+        
+    }else{
+        ofSetColor(0, 0, 150);
+        ofDrawRectangle(500, 600, 100, 100);
+        ofSetColor(255);
+        ofDrawRectangle(510, 610, 80, 80);
+    }
+    if(isBitReact == true){
+        int newR = ofRandom(0);
+        int newG = ofRandom(0);
+        int newB = ofRandom(255);
+        
+        ofSetColor(newR, newG, newB);
+        ofDrawRectangle(750, 100, 100, 100);
+        ofSetColor(255);
+        ofDrawRectangle(760, 110, 80, 80);
+        
+    }else{
+        ofSetColor(0, 150, 0);
+        ofDrawRectangle(750, 100, 100, 100);
+        ofSetColor(255);
+        ofDrawRectangle(760, 110, 80, 80);
+    }
+    if(isBitReact == true){
+        int newR = ofRandom(255);
+        int newG = ofRandom(255);
+        int newB = ofRandom(255);
+        
+        ofSetColor(newR, newG, newB);
+        ofDrawRectangle(870, 600, 100, 100);
+        ofSetColor(255);
+        ofDrawRectangle(880, 610, 80, 80);
+        
+    }else{
+        ofSetColor(100);
+        ofDrawRectangle(870, 600, 100, 100);
+        ofSetColor(255);
+        ofDrawRectangle(880, 610, 80, 80);
+    }
+//	ofSetColor(150, 0, 0);
+//	ofDrawRectangle(350,200,100,100);
+//	ofSetColor(255);
+//	ofDrawRectangle(360, 210, 80, 80);
+//
+//	ofSetColor(0, 0, 150);
+//	ofDrawRectangle(500, 600, 100, 100);
+//	ofSetColor(255);
+//	ofDrawRectangle(510, 610, 80, 80);
+//
+//	ofSetColor(0, 150, 0);
+//	ofDrawRectangle(750, 100, 100, 100);
+//	ofSetColor(255);
+//	ofDrawRectangle(760, 110, 80, 80);
+//
+//	ofSetColor(100);
+//	ofDrawRectangle(870, 600, 100, 100);
+//	ofSetColor(255);
+//	ofDrawRectangle(880, 610, 80, 80);
     
     
     fbo_dock.end();
     
     syphon_server_dock.publishTexture(&fbo_dock.getTexture());
     
-    //fbo_dock.draw(0, 0);
+    fbo_dock.draw(0, 0);
 }
 
 //--------------------------------------------------------------
@@ -157,6 +221,12 @@ void ofApp::keyPressed(int key){
             break;
         case 'a':
             isReact = false;
+            break;
+        case 'x':
+            isBitReact = true;
+            break;
+        case 'z':
+            isBitReact = false;
             break;
     }
 }
