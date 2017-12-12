@@ -10,10 +10,11 @@ void Params::setup() {
 	distance = 5;
 	velocity = 10;
 	lifetime = 1;
-	rotate = 90;
+	rotate = 360;
 
 	//initial colors of particle
 	blue = true;
+	purple = false;
 	yellow = true;
 
 }
@@ -69,7 +70,7 @@ void Particle::update(float dt) {
 }
 
 //--------------------------------------------------------------
-void Particle::drawBlue() { 
+void Particle::drawBlue() {
 
 	//if particle is alive, map the size of the particle using formula
 	if (live) {
@@ -79,19 +80,37 @@ void Particle::drawBlue() {
 		if (param.blue) {
 			ofSetColor(ofColor(0, 0, ofRandom(128, 255)));
 		}
-		//color is red
+		//color is purple
 		else {
-			ofSetColor(ofColor(ofRandom(150, 220), 30, 30));
+			ofSetColor(ofColor(ofRandom(40, 80), 0, 130));
 		}
 
 		//draw the particle as a circle
-		ofCircle(pos, size);
+		ofDrawCircle(pos, size);
 	}
 
 }
 
 //--------------------------------------------------------------
-void Particle::drawYellow() { //yellow particle
+void Particle::drawPurple() {
+
+	//if the color is set to purple
+	if (param.purple) {
+
+		//map the size of the particle using formula
+		float size = ofMap(fabs(time - lifetime / 2), 0, lifetime / 2, 3, 1);
+
+		//set color to purple
+		ofSetColor(ofColor(ofRandom(40, 80), 0, 130));
+
+		//draw particle as a circle
+		ofDrawCircle(pos, size);
+	}
+
+}
+
+//--------------------------------------------------------------
+void Particle::drawYellow() {
 
 	//if the color is set to yellow
 	if (param.yellow) {
@@ -100,10 +119,10 @@ void Particle::drawYellow() { //yellow particle
 		float size = ofMap(fabs(time - lifetime / 2), 0, lifetime / 2, 3, 1);
 
 		//set color to yellow
-		ofSetColor(ofColor(170, ofRandom(150,255), 50));
+		ofSetColor(ofColor(170, ofRandom(150, 255), 50));
 
 		//draw particle as a circle
-		ofCircle(pos, size);
+		ofDrawCircle(pos, size);
 	}
 
 }
@@ -111,15 +130,20 @@ void Particle::drawYellow() { //yellow particle
 //--------------------------------------------------------------
 void ofApp::setup() {
 
-	//set framerate 
+	//name server agnes
+	//server.setName("agnes");
+
+	//load sound and play
+	sound.load("agnes_george_soundtrack.mp3");
+
+	//set framerate
 	ofSetFrameRate(60);
 
 	//window size is 1024 by 768
 	fbo.allocate(1024, 768, GL_RGB32F_ARB);
 
-	//initiate white background that fades to black
 	fbo.begin();
-	ofBackground(255, 255, 255);
+	ofBackground(0);
 	fbo.end();
 
 	//initiate initial particle setup
@@ -129,7 +153,8 @@ void ofApp::setup() {
 	history = 0.995;
 
 	//how many particles will appear in the initial screen
-	bornRate = 10;
+	bornRateB = 15;
+	bornRateP = 10;
 	bornCount = 0;
 	time0 = ofGetElapsedTimef();
 
@@ -137,36 +162,56 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	
+
 	//get time to determine life of particle
 	float time = ofGetElapsedTimef();
 	float dt = time - time0;
 	time0 = time;
 
-	//setup blue/red particles by adding them to array
-	bornCount += dt * bornRate;
+	//setup blue particles by adding them to array
+	bornCount += dt * bornRateB;
+	if (bornCount >= 1) {
+		int bornN = int(bornCount);
+		bornCount -= bornN;
+		for (int i = 0; i<bornN; i++) {		
+
+			//blues
+			Particle newB;
+			newB.setup();
+			blues.push_back(newB);
+		}
+	}
+
+	//setup purple particles by adding them to array
+	bornCount += dt * bornRateP;
 	if (bornCount >= 1) {
 		int bornN = int(bornCount);
 		bornCount -= bornN;
 		for (int i = 0; i<bornN; i++) {
+
+			//purples
 			Particle newP;
 			newP.setup();
-			p.push_back(newP);
+			purples.push_back(newP);
 		}
 	}
 
-	//update blue/red particles in p vector array
-	for (int i = 0; i<p.size(); i++) {
-		p[i].update(dt);
+	//update blue/purple particles in p vector array
+	for (int i = 0; i<blues.size(); i++) {
+		blues[i].update(dt);
+	}
+
+	for (int i = 0; i < purples.size(); i++) {
+		purples[i].update(dt);
 	}
 
 	//setup yellow particle
-	if (!y.live) {
-		y.setup();
+	if (!yellow.live) {
+		yellow.setup();
 	}
 
 	//update yellow particle
-	y.update(dt);
+	yellow.update(dt);
 
 }
 
@@ -182,16 +227,22 @@ void ofApp::draw() {
 	ofFill();
 	ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
 
-	//draw blue/red particles
+	//draw blue/purple particles
 	ofFill();
-	for (int i = 0; i<p.size(); i++) {
-		p[i].drawBlue();
+	for (int i = 0; i<blues.size(); i++) {
+		blues[i].drawBlue();
+	}
+	for (int i = 0; i < purples.size(); i++) {
+		purples[i].drawPurple();
 	}
 
 	//draw yellow particle
-	y.drawYellow();
+	yellow.drawYellow();
 
 	fbo.end();
+
+	//publish syphon server
+	//server.publishTexture(&fbo.getTexture());
 
 	//draw fbo
 	fbo.draw(0, 0);
@@ -200,53 +251,68 @@ void ofApp::draw() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	
+
 	//center distance
 	if (key == '1') {
-		param.distance += 0.2;
+		param.distance += 0.3;
 	}
 
 	if (key == 'q') {
-		param.distance -= 0.2;
+		param.distance -= 0.3;
 	}
 
 	//reach of particle
 	if (key == '2') {
-		param.velocity += 0.2;
+		param.velocity += 0.3;
 	}
 
 	if (key == 'w') {
-		param.velocity += 0.2;
+		param.velocity += 0.3;
 	}
 
 	//amount of particles
 	if (key == '3') {
-		bornRate += 0.2;
+		bornRateB += 0.3;
 	}
 
 	if (key == 'e') {
-		bornRate += 0.2;
+		bornRateB += 0.3;
 	}
-	
-	//make particles stop blue/red and yellow
+
+	//add mixed array
 	if (key == '4') {
-		bornRate = 0;
+		param.purple = true;
+	}
+
+	if (key == '5') {
+		bornRateP += 0.3;
+	}
+
+	//stop all particles
+	if (key == '0') {
+		bornRateB = 0;
+		bornRateP = 0;
 		param.yellow = false;
 	}
 
-	//test option
-	if (key == 't') {
-		param.distance = 100;
-		param.velocity = 200;
-		bornRate = 100;
-	}
-
-	//color change between blue and red
+	//color change between blue and purple
 	if (key == 'b') {
 		param.blue = true;
 	}
 	if (key == 'r') {
 		param.blue = false;
+	}
+
+	//play sound
+	if (key == 'p') {
+		sound.play();
+	}
+
+	//test option
+	if (key == 'a') {
+		param.distance = 200;
+		param.velocity = 200;
+		bornRateB = 40;
 	}
 
 }
