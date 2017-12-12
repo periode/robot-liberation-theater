@@ -10,7 +10,7 @@ void Params::setup() {
     distance = 5;
     velocity = 10;
     lifetime = 1;
-    rotate = 90;
+    rotate = 360;
     
     //initial colors of particle
     blue = true;
@@ -81,7 +81,7 @@ void Particle::drawBlue() {
         }
         //color is red
         else {
-            ofSetColor(ofColor(ofRandom(150, 220), 30, 30));
+            ofSetColor(ofColor(ofRandom(40,80), 0, 130));
         }
         
         //draw the particle as a circle
@@ -116,7 +116,6 @@ void ofApp::setup() {
     
     //load sound and play
     sound.load("agnes_george_soundtrack.mp3");
-    sound.play(); //Plays sound
     
     //set framerate
     ofSetFrameRate(60);
@@ -245,9 +244,9 @@ void ofApp::keyPressed(int key) {
     
     //test option
     if (key == 't') {
-        param.distance = 100;
+        param.distance = 200;
         param.velocity = 200;
-        bornRate = 100;
+        bornRate = 40;
     }
     
     //color change between blue and red
@@ -256,6 +255,11 @@ void ofApp::keyPressed(int key) {
     }
     if (key == 'r') {
         param.blue = false;
+    }
+    
+    //play sound
+    if (key == 'p'){
+        sound.play();
     }
     
 }
