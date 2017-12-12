@@ -295,27 +295,27 @@ void ofApp::keyPressed(int key){
         
     
     else if(key == '1'){
-        mysound.load("dumbo american F.mp3");
+        mysound.load("dumbo american.ogg");
         mysound.play();
     }
     else if(key == '2'){
-        mysound.load("brooklyn bridge chinese F.mp3");
+        mysound.load("brooklyn bridge chinese.ogg");
         mysound.play();
     }
     else if(key == '3'){
-        mysound.load("greenwood american F.mp3");
+        mysound.load("greenwood american.ogg");
         mysound.play();
     }
     else if(key == '4'){
-        mysound.load("prospect time chinese voice.mp3");
+        mysound.load("prospect park chinese.ogg");
         mysound.play();
     }
     else if(key == '5'){
-        mysound.load("wailliamsburg.mp3");
+        mysound.load("wailliamsburg chinese.mp3");
         mysound.play();
     }
     else if(key == '6'){
-        mysound.load("subway.mp3");
+        mysound.load("subway mix voice.ogg");
         mysound.play();
     }
     else if(key == 'b'){
