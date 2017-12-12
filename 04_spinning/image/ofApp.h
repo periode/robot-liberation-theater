@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+//#include "ofxSyphon.h"
 
 //particle class
 class Particle {
@@ -14,6 +15,7 @@ public:
 	void setup();
 	void update(float dt);
 	void drawBlue();
+	void drawPurple();
 	void drawYellow();
 
 	//variables
@@ -39,6 +41,7 @@ public:
 	float lifetime;
 	float rotate;
 	bool blue;
+	bool purple;
 	bool yellow;
 };
 
@@ -49,16 +52,23 @@ class ofApp : public ofBaseApp {
 
 public:
 
+	//add syphon server
+	//ofxSyphonServer server;
+
+	//add sound
+	ofSoundPlayer sound;
+
 	//main functions
 	void setup();
 	void update();
 	void draw();
 
-	//vector array of blue/red particles
-	vector<Particle> p;
+	//vector array of blue/purple particles
+	vector<Particle> blues;
+	vector<Particle> purples;
 
 	//yellow particle
-	Particle y;
+	Particle yellow;
 
 	//fbo initialization
 	ofFbo fbo;
@@ -68,7 +78,8 @@ public:
 
 	//variables for lifetime
 	float time0;
-	float bornRate;
+	float bornRateB;
+	float bornRateP;
 	float bornCount;
 
 	void keyPressed(int key);
@@ -81,3 +92,4 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 };
+
