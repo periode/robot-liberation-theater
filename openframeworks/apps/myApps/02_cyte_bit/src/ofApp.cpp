@@ -106,24 +106,24 @@ void ofApp::draw(){
     
 	ofBackground(0);
 	ofSetColor(150, 0, 0);
-	ofDrawRectangle(200,100,100,100);
+	ofDrawRectangle(350,200,100,100);
 	ofSetColor(255);
-	ofDrawRectangle(210, 110, 80, 80);
+	ofDrawRectangle(360, 210, 80, 80);
 
 	ofSetColor(0, 0, 150);
-	ofDrawRectangle(300, 600, 100, 100);
+	ofDrawRectangle(500, 600, 100, 100);
 	ofSetColor(255);
-	ofDrawRectangle(310, 610, 80, 80);
+	ofDrawRectangle(510, 610, 80, 80);
 
 	ofSetColor(0, 150, 0);
-	ofDrawRectangle(650, 100, 100, 100);
+	ofDrawRectangle(750, 100, 100, 100);
 	ofSetColor(255);
-	ofDrawRectangle(660, 110, 80, 80);
+	ofDrawRectangle(760, 110, 80, 80);
 
 	ofSetColor(100);
-	ofDrawRectangle(800, 600, 100, 100);
+	ofDrawRectangle(870, 600, 100, 100);
 	ofSetColor(255);
-	ofDrawRectangle(810, 610, 80, 80);
+	ofDrawRectangle(880, 610, 80, 80);
     
     
     fbo_dock.end();
