@@ -1,88 +1,82 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
-Particle::Particle() {
-	live = false;
-	state = true;
-	size = 50;
-	angle = 70;
+Params param;
+
+void Params::setup() {
+	eCenter = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2);
+	eRad = 5;
+	velRad = 10;
+	lifeTime = 0.5;
+	rotate = 90;
 }
 
 //--------------------------------------------------------------
-ofPoint randomPointInCircle(float max) {
+Particle::Particle() {
+	live = false;
+}
+
+//--------------------------------------------------------------
+ofPoint randomPointInCircle(float maxRad) {
 	ofPoint pnt;
-	float rad = ofRandom(0, max);
-	float angle = ofRandom(0, TWO_PI);
+	float rad = ofRandom(0, maxRad);
+	float angle = ofRandom(0, M_TWO_PI);
 	pnt.x = cos(angle) * rad;
 	pnt.y = sin(angle) * rad;
 	return pnt;
 }
 
 //--------------------------------------------------------------
-void Particle::state1() {
-	gui.setup();
-	gui.add(color.setup("Color", ofColor(10, 125, 255), ofColor(0, 0), ofColor(255, 255)));
-	pos = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2) + randomPointInCircle(50);
-	vel = randomPointInCircle(size);
-	time = 0;
-	lifeTime = 1.0;
-	rotate = angle;
-	live = true;
-}
-
-//--------------------------------------------------------------
-void Particle::state2() {
-	gui.setup();
-	gui.add(color.setup("Color", ofColor(196, 114, 34), ofColor(0, 0), ofColor(255, 255)));
-	pos = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2) + randomPointInCircle(100);
-	vel = randomPointInCircle(size);
-	time = 0;
-	lifeTime = 1.0;
-	rotate = angle;
-	live = true;
-}
-
-//--------------------------------------------------------------
 void Particle::setup() {
-	if (state) {
-		state1();
-	}
-	else {
-		state2();
-	}
+	pos = param.eCenter + randomPointInCircle(param.eRad);
+	vel = randomPointInCircle(param.velRad);
+	time = 0;
+	lifeTime = param.lifeTime;
+	live = true;
 }
 
 //--------------------------------------------------------------
 void Particle::update(float dt) {
 	if (live) {
-		vel.rotate(0, 0, rotate * dt);
+		vel.rotate(0, 0, param.rotate * dt);
 		pos += vel * dt;
 		time += dt;
-		if (time >= 2) {
+		if (time >= lifeTime) {
 			live = false;
 		}
 	}
 }
 
 //--------------------------------------------------------------
-void Particle::draw() {	
+void Particle::draw() {
 	if (live) {
 		float size = ofMap(fabs(time - lifeTime / 2), 0, lifeTime / 2, 3, 1);
-		ofSetColor(color);
+		ofSetColor(ofColor(0, 0, ofRandom(128, 255)));
 		ofCircle(pos, size);
 	}
-	
 }
 
 //--------------------------------------------------------------
+//----------------------  testApp  -----------------------------
+//--------------------------------------------------------------
 void ofApp::setup() {
-    tex_server.setName("Agnes Syphon");
-	ofSetWindowShape(1024, 768);
-	fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB32F_ARB);
+	ofSetFrameRate(60);
+    
+    server.setName("agnes");
+
+	int w = ofGetWidth();
+	int h = ofGetHeight();
+	fbo.allocate(1024, 768, GL_RGB32F_ARB);
+
 	fbo.begin();
-	ofBackground(0);
+	ofBackground(255, 255, 255);
 	fbo.end();
+
+	param.setup();
 	history = 0.995;
+	bornRate = 10;
+
+	bornCount = 0;
 	time0 = ofGetElapsedTimef();
 }
 
@@ -91,47 +85,89 @@ void ofApp::update() {
 	float time = ofGetElapsedTimef();
 	float dt = ofClamp(time - time0, 0, 0.1);
 	time0 = time;
-	if (!p.live) {
-		p.setup();
+
+	int i = 0;
+	while (i > p.size()) {
+		if (!p[i].live) {
+			p.erase(p.begin() + i);
+		}
+		else {
+			i--;
+		}
 	}
-	p.update(dt);
+
+	bornCount += dt * bornRate;
+	if (bornCount >= 1) {
+		int bornN = int(bornCount);
+		bornCount -= bornN;
+		for (int i = 0; i<bornN; i++) {
+			Particle newP;
+			newP.setup();
+			p.push_back(newP);
+		}
+	}
+
+	for (int i = 0; i<p.size(); i++) {
+		p[i].update(dt);
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+	ofBackground(255, 255, 255);
+
 	fbo.begin();
+
+	ofEnableAlphaBlending();
+
+	float alpha = (1 - history) * 255;
+	ofSetColor(0, 0, 0, alpha);
 	ofFill();
-	p.draw();
+	ofRect(0, 0, ofGetWidth(), ofGetHeight());
+
+	ofDisableAlphaBlending();
+
+	ofFill();
+	for (int i = 0; i<p.size(); i++) {
+		p[i].draw();
+	}
+
 	fbo.end();
+
+    server.publishTexture(&fbo.getTexture());
     
-    tex_server.publishTexture(&fbo.getTexture());
-    
+	ofSetColor(255, 255, 255);
 	fbo.draw(0, 0);
-    gui.draw();
-    
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	if (key == 'q') {
-		p.size += 5.0;
-	} 
-	if (key == 'w') {
-		p.size -= 5.0;
+	if (key == '1') {
+		param.eRad = 25;
+		param.velRad = 50;
 	}
-	
-	if (key == 'a') {
-		p.angle += 1.0;
+	if (key == '2') {
+		param.eRad = 100;
+		param.velRad = 200;
+		bornRate = 100;
 	}
-	if (key == 's') {
-		p.angle -= 1.0;
+	if (key == '3') {
+		param.eRad = 200;
+		param.velRad = 300;
+		bornRate = 400;
 	}
-
-	if (key == 'z') {
-		p.state = false;
+	if (key == '4') {
+		param.eRad = 400;
+		param.velRad = 600;
+		bornRate = 800;
 	}
-	if (key == 'x') {
-		p.state = true;
+	if (key == '5') {
+		param.eRad = 1000;
+		param.velRad = 400;
+		bornRate = 1000;
+	}
+	if (key == '6') {
+		bornRate = 0;
 	}
 }
 
