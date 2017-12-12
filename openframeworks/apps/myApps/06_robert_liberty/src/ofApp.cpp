@@ -311,11 +311,11 @@ void ofApp::keyPressed(int key){
         mysound.play();
     }
     else if(key == '5'){
-        mysound.load("wailliamsburg chinese.mp3");
+        mysound.load("wailliamsburg chinese.ogg");
         mysound.play();
     }
     else if(key == '6'){
-        mysound.load("subway mix voice.ogg");
+        mysound.load("NYSubway.ogg");
         mysound.play();
     }
     else if(key == 'b'){
