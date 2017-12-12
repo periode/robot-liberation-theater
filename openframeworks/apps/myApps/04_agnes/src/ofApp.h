@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-//#include "ofxSyphon.h"
+#include "ofxSyphon.h"
 
 //particle class
 class Particle {
@@ -53,7 +53,7 @@ class ofApp : public ofBaseApp {
 public:
 
 	//add syphon server
-	//ofxSyphonServer server;
+	ofxSyphonServer server;
 
 	//add sound
 	ofSoundPlayer sound;

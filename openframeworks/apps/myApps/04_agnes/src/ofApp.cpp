@@ -131,7 +131,7 @@ void Particle::drawYellow() {
 void ofApp::setup() {
 
 	//name server agnes
-	//server.setName("agnes");
+	server.setName("agnes");
 
 	//load sound and play
 	sound.load("agnes_george_soundtrack.mp3");
@@ -225,7 +225,7 @@ void ofApp::draw() {
 	float alpha = (1 - history) * 255;
 	ofSetColor(0, 0, 0, alpha);
 	ofFill();
-	ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+	ofDrawRectangle(0, 0, ofGetWidth()*2, ofGetHeight()*2);
 
 	//draw blue/purple particles
 	ofFill();
@@ -242,7 +242,7 @@ void ofApp::draw() {
 	fbo.end();
 
 	//publish syphon server
-	//server.publishTexture(&fbo.getTexture());
+	server.publishTexture(&fbo.getTexture());
 
 	//draw fbo
 	fbo.draw(0, 0);
@@ -267,7 +267,7 @@ void ofApp::keyPressed(int key) {
 	}
 
 	if (key == 'w') {
-		param.velocity += 0.3;
+		param.velocity -= 0.3;
 	}
 
 	//amount of particles
@@ -276,7 +276,7 @@ void ofApp::keyPressed(int key) {
 	}
 
 	if (key == 'e') {
-		bornRateB += 0.3;
+		bornRateB -= 0.3;
 	}
 
 	//add mixed array
@@ -310,7 +310,7 @@ void ofApp::keyPressed(int key) {
 
 	//test option
 	if (key == 'a') {
-		param.distance = 200;
+		param.distance = 400;
 		param.velocity = 200;
 		bornRateB = 40;
 	}
