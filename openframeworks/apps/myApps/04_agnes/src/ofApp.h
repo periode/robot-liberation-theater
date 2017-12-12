@@ -1,56 +1,66 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofXGui.h"
 #include "ofxSyphon.h"
 
 class Particle {
 
-	public:
-		ofxPanel gui;
-		ofxColorSlider color;
+public:
 
-		Particle();
+	Particle();
 
-		void setup();
-		void state1();
-		void state2();
-		void update(float dt);
-		void draw();
+	void setup();
+	void update(float dt);
+	void draw();
 
-		ofPoint pos;
-		ofPoint vel;
-
-		float state;
-		float size;
-		float angle;
-		float time;
-		float lifeTime;
-		float rotate;
-		bool live;
+	ofPoint pos;
+	ofPoint vel;
+	float time;
+	float lifeTime;
+	bool live;
 };
+
+class Params {
+
+public:
+
+	void setup();
+
+	ofPoint eCenter;
+	float eRad;
+	float velRad;
+	float lifeTime;
+	float rotate;
+};
+
+extern Params params;
 
 class ofApp : public ofBaseApp {
     
-    ofxSyphonServer tex_server;
+    ofxSyphonServer server;
 
-	public:
-		void setup();
-		void update();
-		void draw();
+public:
 
-		Particle p;
-		ofFbo fbo;
-		float history;
-		float time0;
+	void setup();
+	void update();
+	void draw();
 
-		void keyPressed(int key);
-		void keyReleased(int key);
-		void mouseMoved(int x, int y);
-		void mouseDragged(int x, int y, int button);
-		void mousePressed(int x, int y, int button);
-		void mouseReleased(int x, int y, int button);
-		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
-}; 
+	vector<Particle> p;
+	Particle pp;
+	ofFbo fbo;
+
+	float history;
+	float time0;
+	float bornRate;
+	float bornCount;
+
+	void keyPressed(int key);
+	void keyReleased(int key);
+	void mouseMoved(int x, int y);
+	void mouseDragged(int x, int y, int button);
+	void mousePressed(int x, int y, int button);
+	void mouseReleased(int x, int y, int button);
+	void windowResized(int w, int h);
+	void dragEvent(ofDragInfo dragInfo);
+	void gotMessage(ofMessage msg);
+};
