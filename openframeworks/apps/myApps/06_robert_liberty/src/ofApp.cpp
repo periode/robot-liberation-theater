@@ -73,9 +73,11 @@ void ofApp::setup(){
    manual=false;
     
     sites.load("Map-Pin.png");
+    sites.resize(10,20);
     
     
     subway.load("subway.png");
+    
     
     
     sites.setAnchorPoint(sites.getWidth()/2, 0);
