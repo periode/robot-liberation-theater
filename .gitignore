@@ -1,6 +1,8 @@
 .DS_Store
 00_rhyming/video/*
 openframeworks/libs/openFrameworksCompiled/lib/osx/openFrameworksDebug.a
+openframeworks/libs/openFrameworksCompiled/lib/osx/openFrameworks.a
+**/bin/
 [Oo]bj/
 *.o
 **/*.app
