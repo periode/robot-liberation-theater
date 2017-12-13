@@ -238,9 +238,9 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1237.333374, 672.0, 113.0, 22.0 ],
+					"patching_rect" : [ 1237.333374, 672.0, 103.0, 22.0 ],
 					"style" : "",
-					"text" : "open track001.mp3"
+					"text" : "open track001.aif"
 				}
 
 			}
@@ -257,7 +257,7 @@
 						"followglobaltempo" : 0,
 						"formantcorrection" : 0,
 						"mode" : "basic",
-						"originallength" : [ 249599.984375, "ticks" ],
+						"originallength" : [ 205439.984375, "ticks" ],
 						"originaltempo" : 119.999992,
 						"pitchcorrection" : 0,
 						"quality" : "basic",
@@ -2901,8 +2901,8 @@
 		"styles" : [ 			{
 				"name" : "newobjYellow-1",
 				"default" : 				{
-					"accentcolor" : [ 0.82517, 0.78181, 0.059545, 1.0 ],
-					"fontsize" : [ 12.059008 ]
+					"fontsize" : [ 12.059008 ],
+					"accentcolor" : [ 0.82517, 0.78181, 0.059545, 1.0 ]
 				}
 ,
 				"parentstyle" : "",
