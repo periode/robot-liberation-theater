@@ -295,11 +295,11 @@ void ofApp::keyPressed(int key){
         
     
     else if(key == '1'){
-        mysound.load("dumbo american .ogg");
+        mysound.load("dumbo american.ogg");
         mysound.play();
     }
     else if(key == '2'){
-        mysound.load("brooklyn bridge chinese .ogg");
+        mysound.load("brooklyn bridge chinese.ogg");
         mysound.play();
     }
     else if(key == '3'){
