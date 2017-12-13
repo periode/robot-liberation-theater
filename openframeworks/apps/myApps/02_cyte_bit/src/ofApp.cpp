@@ -188,6 +188,7 @@ void ofApp::keyPressed(int key){
         case '1':
             Beat.play();
             other.play();
+            //isRedReact = !isRedReact;
             break;
         case '2':
             Beat.stop();
@@ -206,19 +207,15 @@ void ofApp::keyPressed(int key){
             break;
         case 'z':
             isRedReact = !isRedReact;
-            isReact = !isReact;
             break;
         case 'x':
             isBlueReact = !isBlueReact;
-            isReact = !isReact;
             break;
         case 'c':
             isGreenReact = !isGreenReact;
-            isReact = !isReact;
             break;
         case 'v':
             isGrayReact = !isGrayReact;
-            isReact = !isReact;
             break;
     }
 }
