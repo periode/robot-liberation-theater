@@ -160,13 +160,16 @@ void ofApp::draw(){
   
     ofClear(255,255,255, 0);
     ofBackground(backgroundc);
-    cam.begin();
-  
     ofSetColor(100,100,100);
     ofPushMatrix();
-    ofRotate(90, 0, 1, 0);
-    ofDrawGridPlane(2,10000,false);
+    ofTranslate(0,100,0);
+    ofRotate(90, 1, 0, 0); //ofMap(ofGetMouseX(), 0, ofGetWindowWidth(), 0, 180)
+    ofNoFill();
+    ofDrawPlane(5000,5000);
     ofPopMatrix();
+    cam.begin();
+  
+    
 
     ofEnableDepthTest();
      for(int i = 0; i < cube_positions.size(); i++){
