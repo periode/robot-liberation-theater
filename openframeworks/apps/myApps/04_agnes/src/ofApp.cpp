@@ -294,7 +294,7 @@ void ofApp::keyPressed(int key) {
 		bornRateP = 0;
 		param.yellow = false;
 	}
-
+        
 	//color change between blue and purple
 	if (key == 'b') {
 		param.blue = true;

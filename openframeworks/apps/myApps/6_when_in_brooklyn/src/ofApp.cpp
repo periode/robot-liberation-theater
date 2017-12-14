@@ -63,8 +63,8 @@ void ofApp::setup(){
     cam_rotation = 270.f;
     cam.rotate(cam_rotation,zaxis);
     
-    cam.setGlobalPosition(105,0,5);
-//    cam.setGlobalPosition(ofGetWindowWidth()/2,ofGetWindowHeight()/2,500);
+    cam.setGlobalPosition(390,490,5);
+//(105,0,5);//    cam.setGlobalPosition(ofGetWindowWidth()/2,ofGetWindowHeight()/2,500);
 //
     
    
@@ -76,7 +76,7 @@ void ofApp::setup(){
     
     
     
-    subway.load("subway.png");
+    subway.load("subway2.png");
     
     
     
@@ -160,16 +160,13 @@ void ofApp::draw(){
   
     ofClear(255,255,255, 0);
     ofBackground(backgroundc);
-    ofSetColor(100,100,100);
-    ofPushMatrix();
-    ofTranslate(0,100,0);
-    ofRotate(90, 1, 0, 0); //ofMap(ofGetMouseX(), 0, ofGetWindowWidth(), 0, 180)
-    ofNoFill();
-    ofDrawPlane(5000,5000);
-    ofPopMatrix();
     cam.begin();
   
-    
+    ofSetColor(100,100,100);
+    ofPushMatrix();
+    ofRotate(90, 0, 1, 0);
+    ofDrawGridPlane(2,10000,false);
+    ofPopMatrix();
 
     ofEnableDepthTest();
      for(int i = 0; i < cube_positions.size(); i++){
@@ -227,8 +224,8 @@ void ofApp::draw(){
     ofPushMatrix();
     ofTranslate(landmark6.x,landmark6.y, 0);
     ofRotate(90, 1, 0, 0);
-    ofScale(.01, .01, 01);
-    subway.draw(0,0,0);
+    ofScale(.01, .01, .01);
+    sites.draw(0,0,0);
     ofPopMatrix();
    
 //    ofDrawIcoSphere(landmark1.x,landmark1.y, 10);
